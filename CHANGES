@@ -1,0 +1,5 @@
+
+30e344d | 2014-08-08 18:26:16 -0700
+
+  * Converting DataSeries and ElasticSearch log writers into external
+  plugins. (Robin Sommer)
