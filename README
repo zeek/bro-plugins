@@ -1,3 +1,23 @@
 
 A Collection of Plugins for Bro
 ===============================
+
+This repository contains a set of Bro plugins provided by Bro projectm
+and potentially also selected plugins contributed by the community.
+
+Currently, there are the following plugins available.
+
+    dataseries/
+        A log writer adding support for HP Labs' DataSeries binary
+        format.
+
+    elasticsearch/
+        A log writer adding support for the Apache Lucene-based
+        ElasticSearch database.
+
+Please refer to the plugins individual README files for more
+information on installation and usage, as well as their COPYING files
+for licensing information.
+
+If you would like to see your plugin included into the repository,
+please write to info@bro.org.

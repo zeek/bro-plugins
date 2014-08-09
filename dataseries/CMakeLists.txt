@@ -7,8 +7,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 include(BroPlugin)
 
-message("XXX ${CMAKE_MODULE_PATH}")
-
 find_package(Lintel)
 find_package(DataSeries)
 find_package(LibXML2)

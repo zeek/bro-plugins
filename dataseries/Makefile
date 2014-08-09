@@ -29,6 +29,8 @@ install:
 
 clean:
 	( cd $(cmake_build_dir) && make clean )
+#	rm -f __bro_plugin
+#	rm -rf lib
 
 distclean:
 	rm -rf $(cmake_build_dir) lib __bro_plugin__
