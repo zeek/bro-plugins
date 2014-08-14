@@ -33,20 +33,21 @@ Once extracted, start ElasticSearch with::
 For more detailed information, refer to the ElasticSearch installation
 documentation: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup.html
 
-Compiling Bro with ElasticSearch Support
-----------------------------------------
+Installing the DataSeries Plugin
+--------------------------------
 
-First, ensure that you have libcurl installed then run configure::
+First, ensure that you have libcurl installed. Then the following will
+compile and install the plugin alongside Bro::
 
-    # ./configure
-    [...]
-    ====================|  Bro Build Summary  |=====================
-    [...]
-    cURL:              true
-    [...]
-    ElasticSearch:     true
-    [...]
-    ================================================================
+    # ./configure && make && make install
+
+See the output of ``./configure --help`` for additional options if it
+can't find any of the prerequisites.
+
+If everything built and installed correctly, you should see this::
+
+    # bro -N Bro::ElasticSearch
+    Bro::ElasticSearch - ElasticSearch log writer (dynamic, version 1.0)
 
 Activating ElasticSearch
 ------------------------

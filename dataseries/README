@@ -18,9 +18,9 @@ DataSeries is developed and maintained at HP Labs.
 Installing DataSeries
 ---------------------
 
-To use DataSeries, its libraries must be available at compile-time,
-along with the supporting *Lintel* package. Generally, both are
-distributed on `HP Labs' web site
+To use the DataSeries plugin, the DataSeries libraries must be
+available at compile-time, along with the supporting *Lintel* package.
+Generally, both are distributed on `HP Labs' web site
 <http://tesla.hpl.hp.com/opensource/>`_. Currently, however, you need
 to use recent development versions for both packages, which you can
 download from github like this::
@@ -43,23 +43,21 @@ For users on RedHat-style systems, you'll need the following::
 
     yum install libxml2-devel boost-devel
 
-Compiling Bro with DataSeries Support
--------------------------------------
+Installing the DataSeries Plugin
+--------------------------------
 
-Once you have installed DataSeries, Bro's ``configure`` should pick it
-up automatically as long as it finds it in a standard system location.
-Alternatively, you can specify the DataSeries installation prefix
-manually with ``--with-dataseries=<prefix>``. Keep an eye on
-``configure``'s summary output, if it looks like the following, Bro
-found DataSeries and will compile in the support::
+Once you have installed DataSeries, the following will compile and
+install the plugin alongside Bro::
 
-    # ./configure --with-dataseries=/usr/local
-    [...]
-    ====================|  Bro Build Summary  |=====================
-    [...]
-    DataSeries:        true
-    [...]
-    ================================================================
+    # ./configure && make && make install
+
+See the output of ``./configure --help`` for additional options if it
+can't find any of the prerequisites.
+
+If everything built and installed correctly, you should see this::
+
+    # bro -N Bro::DataSeries
+    Bro::DataSeries - DataSeries log writer (dynamic, version 1.0)
 
 Activating DataSeries
 ---------------------

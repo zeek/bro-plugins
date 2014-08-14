@@ -11,8 +11,7 @@ find_package(Lintel)
 find_package(DataSeries)
 find_package(LibXML2)
 
-if (NOT DISABLE_DATASERIES AND
-    LINTEL_FOUND AND DATASERIES_FOUND AND LIBXML2_FOUND)
+if (LINTEL_FOUND AND DATASERIES_FOUND AND LIBXML2_FOUND)
 
     include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -28,7 +27,7 @@ if (NOT DISABLE_DATASERIES AND
     bro_plugin_link_library(${DataSeries_LIBRARIES})
     bro_plugin_link_library(${LibXML2_LIBRARIES})
     bro_plugin_end()
-
+    message(STATUS "DataSeries prefix   : ${DataSeries_ROOT_DIR}")
 else ()
-    message("DataSeries not found.")
+    message(FATAL_ERROR "DataSeries not found.")
 endif ()

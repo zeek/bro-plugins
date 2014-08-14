@@ -14,5 +14,7 @@ plugin::Configuration Plugin::Configure()
 	plugin::Configuration config;
 	config.name = "Bro::DataSeries";
 	config.description = "DataSeries log writer";
+	config.version.major=1;
+	config.version.minor=0;
 	return config;
 	}

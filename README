@@ -2,10 +2,11 @@
 A Collection of Plugins for Bro
 ===============================
 
-This repository contains a set of Bro plugins provided by Bro projectm
-and potentially also selected plugins contributed by the community.
+This repository contains a set of Bro plugins provided by the Bro
+Project, as well as potentially also selected plugins contributed by
+the Bro community.
 
-Currently, there are the following plugins available.
+Currently, there are the following plugins available:
 
     dataseries/
         A log writer adding support for HP Labs' DataSeries binary
@@ -16,8 +17,8 @@ Currently, there are the following plugins available.
         ElasticSearch database.
 
 Please refer to the plugins individual README files for more
-information on installation and usage, as well as their COPYING files
-for licensing information.
+information on installation and usage, and to their COPYING files for
+licensing information.
 
 If you would like to see your plugin included into the repository,
 please write to info@bro.org.
