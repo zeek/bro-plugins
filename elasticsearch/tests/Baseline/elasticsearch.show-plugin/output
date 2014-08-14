@@ -1,4 +1,4 @@
-Bro::ElasticSearch - ElasticSearch log writer (dynamic, no version information)
+Bro::ElasticSearch - ElasticSearch log writer (dynamic, version 1.0)
     [Writer] ElasticSearch (Log::WRITER_ELASTICSEARCH)
     [Constant] LogElasticSearch::cluster_name
     [Constant] LogElasticSearch::server_host
