@@ -1,5 +1,6 @@
 #
-# A Makefile with convinience targets, primarily mean for automatic building and testing.
+# A Makefile with convenience targets, primarily meant for automatic
+# building and testing.
 #
 
 build-all: build-dataseries build-elasticsearch

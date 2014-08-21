@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Wrapper for viewing/setting options that # the plugin's CMake
+# Wrapper for viewing/setting options that the plugin's CMake
 # scripts will recognize.
 
 set -e
