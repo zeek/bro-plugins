@@ -10,6 +10,7 @@ include(BroPlugin)
 find_package(LibCURL)
 
 if ( LIBCURL_FOUND )
+    include_directories(BEFORE ${LibCURL_INCLUDE_DIR})
     bro_plugin_begin(Bro ElasticSearch)
     bro_plugin_cc(src/ElasticSearch.cc)
     bro_plugin_cc(src/Plugin.cc)
