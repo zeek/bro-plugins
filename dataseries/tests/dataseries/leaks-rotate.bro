@@ -4,7 +4,7 @@
 #
 # @TEST-GROUP: leaks
 #
-# @TEST-EXEC: HEAP_CHECK_DUMP_DIRECTORY=. HEAPCHECK=local btest-bg-run bro bro -m -b -r $TRACES/rotation.trace Bro::DataSeries %INPUT Log::default_writer=Log::WRITER_DATASERIES
+# @TEST-EXEC: HEAP_CHECK_DUMP_DIRECTORY=. HEAPCHECK=local btest-bg-run bro bro -m -b -r ${BRO_TRACES}/rotation.trace Bro::DataSeries %INPUT Log::default_writer=Log::WRITER_DATASERIES
 # @TEST-EXEC: btest-bg-wait 15
 
 module Test;
