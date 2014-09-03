@@ -16,6 +16,9 @@ Currently, there are the following plugins available:
         A log writer adding support for the Apache Lucene-based
         ElasticSearch database.
 
+    netmap/
+        A packet source providing native netmap support.
+
 Please refer to the plugins individual README files for more
 information on installation and usage, and to their COPYING files for
 licensing information.
