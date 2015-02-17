@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# Hooks to add custom options to the configure script.
+#
+
+function plugin_usage {
+    cat <<EOF
+    --with-libcurl=PATH        Path to libcurl installation
+EOF
+}
+
+function plugin_option {
+    case "$1" in
+        --with-libcurl=*)
+            append_cache_entry LibCURL_ROOT_DIR PATH $optarg
+            ;;
+
+        *)
+            return 1;
+            ;;
+    esac
+}
