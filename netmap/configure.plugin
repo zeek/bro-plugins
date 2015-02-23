@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+
+function plugin_usage {
+    cat <<EOF
+    --with-netmap=DIR          Path to netmap installation
+EOF
+}
+
+function plugin_option {
+
+    case "$1" in
+        --with-netmap=*)
+            append_cache_entry NETMAP_ROOT_DIR PATH $optarg
+            return 0
+            ;;
+
+        *)
+            return 1;
+            ;;
+    esac
+}
