@@ -11,7 +11,7 @@ command="$0 $*"
 
 if [ -e `dirname $0`/configure.plugin ]; then
     # Include custom additions.
-    source `dirname $0`/configure.plugin
+    . `dirname $0`/configure.plugin
 fi
 
 # Check for `cmake` command.
@@ -23,7 +23,7 @@ use this configure script to access CMake equivalent functionality.\
     exit 1;
 }
 
-function usage() {
+usage() {
 
 cat 1>&2 <<EOF
 Usage: $0 [OPTIONS]
