@@ -6,7 +6,7 @@ This repository contains a set of Bro plugins provided by the Bro
 Project, as well as potentially also selected plugins contributed by
 the Bro community.
 
-Currently, there are the following plugins available:
+Currently, the following plugins are available:
 
     dataseries/
         A log writer adding support for HP Labs' DataSeries binary
