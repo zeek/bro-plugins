@@ -33,7 +33,7 @@ Usage: $0 [OPTIONS]
     --install-root=DIR         Path where to install plugin into
 EOF
 
-if type -t plugin_usage >/dev/null 2>&1; then
+if type plugin_usage >/dev/null 2>&1; then
     plugin_usage 1>&2
 fi
 
@@ -77,7 +77,7 @@ while [ $# -ne 0 ]; do
             ;;
 
         *)
-            if type -t plugin_option >/dev/null 2>&1; then
+            if type plugin_option >/dev/null 2>&1; then
                 plugin_option $1 && shift && continue;
             fi
 
