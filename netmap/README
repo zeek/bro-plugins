@@ -30,10 +30,10 @@ Usage
 -----
 
 Once installed, you can use netmap interfaces/ports by prefixing them
-with either ``netmap`` or ``vale`` on the command line. For example,
+with either ``netmap::`` or ``vale::`` on the command line. For example,
 to use netmap to monitor interface ``eth0``::
 
-    bro -i netmap:eth0
+    bro -i netmap::eth0
 
 Netmap does not automatically turn interfaces into promiscious mode,
 you'll have to do that yourself. For example, on Linux::
