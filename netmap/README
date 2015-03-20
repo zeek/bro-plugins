@@ -21,7 +21,7 @@ command. If everything built and installed correctly, you should see
 this::
 
     # bro -N Bro::Netmap
-    Bro::Netmap - Packet aquisition via netmap (dynamic, version 1.0)
+    Bro::Netmap - Packet acquisition via netmap (dynamic, version 1.0)
 
 To use netmap, Bro needs read and write access to ``/dev/netmap``. If
 you give that permission to a user, you can run Bro as non-root.
@@ -35,7 +35,7 @@ to use netmap to monitor interface ``eth0``::
 
     bro -i netmap::eth0
 
-Netmap does not automatically turn interfaces into promiscious mode,
+Netmap does not enable promiscuous mode on interfaces,
 you'll have to do that yourself. For example, on Linux::
 
     ifconfig eth0 promisc

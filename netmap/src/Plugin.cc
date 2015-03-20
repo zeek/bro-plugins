@@ -13,7 +13,7 @@ plugin::Configuration Plugin::Configure()
 
 	plugin::Configuration config;
 	config.name = "Bro::Netmap";
-	config.description = "Packet aquisition via netmap";
+	config.description = "Packet acquisition via netmap";
 	config.version.major = 1;
 	config.version.minor = 0;
 	return config;
