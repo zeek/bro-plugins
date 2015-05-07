@@ -1,4 +1,8 @@
 
+0.1 | 2015-03-20 10:43:29 -0500
+
+  * Release 0.1.
+
 30e344d | 2014-08-08 18:26:16 -0700
 
   * Converting DataSeries and ElasticSearch log writers into external
