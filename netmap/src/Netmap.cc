@@ -45,7 +45,6 @@ void NetmapSource::Open()
 	props.selectable_fd = NETMAP_FD(nd);
 	props.is_live = true;
 	props.link_type = DLT_EN10MB; // XXX?
-	props.hdr_size = GetLinkHeaderSize(props.link_type);
 
 	num_discarded = 0;
 
@@ -84,9 +83,8 @@ bool NetmapSource::ExtractNextPacket(Packet* pkt)
 		current_hdr.caplen = hdr.caplen;
 		current_hdr.len = hdr.len;
 
-		pkt->ts = current_hdr.ts.tv_sec + double(current_hdr.ts.tv_usec) / 1e6;
-		pkt->hdr = &current_hdr;
-		pkt->data = last_data = data;
+		last_data = data;
+		pkt->Init(props.link_type, &current_hdr.ts, current_hdr.caplen, current_hdr.len, data);
 
 		if ( current_hdr.len == 0 || current_hdr.caplen == 0 )
 			{
