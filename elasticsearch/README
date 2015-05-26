@@ -53,12 +53,12 @@ Activating ElasticSearch
 ------------------------
 
 The easiest way to enable ElasticSearch output is to load the
-tuning/logs-to-elasticsearch.bro script.  If you are using BroControl,
+plugin's ``logs-to-elasticsearch.bro`` script.  If you are using BroControl,
 the following line in local.bro will enable it:
 
 .. console::
 
-    @load tuning/logs-to-elasticsearch
+    @load Bro/ElasticSearch/logs-to-elasticsearch.bro
 
 With that, Bro will now write most of its logs into ElasticSearch in addition
 to maintaining the Ascii logs like it would do by default.  That script has
