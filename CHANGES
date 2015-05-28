@@ -1,4 +1,11 @@
 
+0.1-2 | 2015-05-28 13:18:58 -0700
+
+  * Fixing script helper to return correct path for tests. (Robin
+    Sommer)
+
+  * Fixing README. Addresses #1395. (Robin Sommer)
+
 0.1 | 2015-03-20 10:43:29 -0500
 
   * Release 0.1.
