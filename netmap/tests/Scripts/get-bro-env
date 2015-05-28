@@ -10,7 +10,7 @@ if [ "$1" = "brobase" ]; then
 elif [ "$1" = "bropath" ]; then
     ${bro}/build/bro-path-dev
 elif [ "$1" = "bro_plugin_path" ]; then
-    ( cd ${base}/../.. && pwd )
+    ( cd ${base}/../../build && pwd )
 elif [ "$1" = "bro_seed_file" ]; then
     echo ${bro}/testing/btest/random.seed
 elif [ "$1" = "path" ]; then
