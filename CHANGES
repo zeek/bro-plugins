@@ -1,4 +1,13 @@
 
+0.1-6 | 2015-06-02 09:35:54 -0700
+
+  * Fix minor formatting and typos in Bro scripts. (Daniel Thayer)
+
+  * Add links to each plugin README from the main README. (Daniel
+    Thayer)
+
+  * Fix a broken link in the dataseries README. (Daniel Thayer)
+
 0.1-2 | 2015-05-28 13:18:58 -0700
 
   * Fixing script helper to return correct path for tests. (Robin
