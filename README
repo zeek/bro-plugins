@@ -17,6 +17,8 @@ Currently, the following plugins are available:
 
    netmap - A packet source providing native netmap support <netmap/README>
 
+   TCPRS - a TCP retransmission and network reordering detection and classification analyzer <tcprs/README>
+
 Please refer to the documentation for each plugin for
 information on installation and usage, and to their COPYING files for
 licensing information.
