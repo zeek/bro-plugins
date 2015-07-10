@@ -1,0 +1,22 @@
+jswaro::tcprs - A TCP retransmission and network reordering detection and classification analyzer (dynamic, version 1.0)
+    [Analyzer] TCPRS (ANALYZER_TCPRS, enabled)
+    [Event] conn_spurious_dsack
+    [Event] conn_rexmit
+    [Event] conn_rtx_summary
+    [Event] conn_rtx_types
+    [Event] tcp_dup_ack
+    [Event] conn_state_change
+    [Event] conn_dead_event
+    [Event] conn_ooo_summary
+    [Event] conn_ooo_event
+    [Event] conn_ambi_order
+    [Event] conn_config
+    [Event] conn_rtt_estimate
+    [Event] conn_limited_transmit
+    [Event] conn_fast_recovery
+    [Event] conn_initial_rtt
+    [Event] conn_initial_rto
+    [Type] rtx_stats
+    [Constant] tcprs_enabled
+    Implements AddToAnalyzerTree (priority 0)
+
