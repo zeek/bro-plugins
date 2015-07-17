@@ -1,0 +1,67 @@
+
+=================
+BRO Redis Logging
+=================
+
+Log filter for REDIS key-value DB. This is not a very common logging format, as
+you lose query ability on all log fields except the key field. One can find it
+useful to store (temporary) metadata about specific network events.
+
+All log fields get formated as a json string and saved as a REDIS value.
+The keys for these values are another log field, selectable for each log filter.
+
+Be aware that duplicate key values will overwrite the corresponding
+associated values.
+
+
+Fair warning
+-----------
+This plugin, almost certainly, will be useful for custom log streams
+(see https://www.bro.org/sphinx/frameworks/logging.html).
+This code is not production ready!
+If there are problems with the DB connection, buffered data will be lost!
+
+
+Installing
+---------
+First, install libhiredis library and headers. On Ubuntu do:
+    # sudo apt-get install libhiredis-dev
+To install this plugin run:
+    # ./configure --bro-dist=<path_to_bro_build> && make && sudo make install
+To check everything installed succesfully run:
+    # make test
+or
+    # bro -N Bro::Redis
+    Bro::Redis - Redis log writer (dynamic, version 1.0)
+
+
+Howto
+-----
+Global default configs for all redis filters:
+<bro_install>/lib/bro/plugins/Bro_Redis/scripts/init.bro
+Overwrite with redef statements, or setting $config tables for each filter.
+
+You can select the log field that will become the key, either with 'key_index'
+or 'key'. With 'key' log field names will be checked and the first field that
+matches will become the key for this log stream (it will overwrite 'key_index').
+The key can also pe prepended (namespaced) by setting 'key_prefix', or you can
+change the database by setting 'db'. 'unix_path' overwrites 'server_host'.
+
+
+Example
+------
+Filter for a custom log stream that outputs extracted file's metadata. The
+'dump file' log field is the REDIS key.
+
+    local redis_filter: Log::Filter = [$name = "http-extracted-redis",
+                                       $writer = Log::WRITER_REDIS,
+                                       $config = table(["key"] = "dump_file",
+                                                       ["db"] = "4",
+                                                       ["server_host"] = "127.0.0.1",
+                                                       ["server_port"] = "6379",
+                                                       ["key_prefix"] = "",
+                                                       ["key_expire"] = "600",
+                                                       ["flush_period"] = "10")];
+    Log::add_filter(YourLogID::LOG, redis_filter);
+
+

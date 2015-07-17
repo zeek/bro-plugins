@@ -1,0 +1,12 @@
+Bro::Redis - Redis log writer (dynamic, version 1.0)
+    [Writer] Redis (Log::WRITER_REDIS)
+    [Constant] Redis::server_host
+    [Constant] Redis::unix_path
+    [Constant] Redis::server_port
+    [Constant] Redis::db
+    [Constant] Redis::key_prefix
+    [Constant] Redis::key_index
+    [Constant] Redis::json_timestamps
+    [Constant] Redis::flush_period
+    [Constant] Redis::key_expire
+
