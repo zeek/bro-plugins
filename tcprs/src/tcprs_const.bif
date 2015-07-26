@@ -1,0 +1,5 @@
+##! Declaration of script level constants for the TCPRS analyzer
+
+type rtx_stats : record;
+
+const tcprs_enabled: bool;
