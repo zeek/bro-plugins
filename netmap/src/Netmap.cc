@@ -1,7 +1,7 @@
 
 #include <assert.h>
 
-#include "config.h"
+#include "bro-config.h"
 
 #include "Netmap.h"
 

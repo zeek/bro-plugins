@@ -4,7 +4,7 @@
 //
 
 
-#include "config.h"
+#include "bro-config.h"
 
 #include "util.h" // Needs to come first for stdint.h
 
