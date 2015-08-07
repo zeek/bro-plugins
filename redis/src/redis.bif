@@ -1,0 +1,14 @@
+
+# Options for the Redis writer.
+
+module Redis;
+
+const server_host: string;
+const unix_path: string;
+const server_port: count;
+const db: count;
+const key_prefix: string;
+const key_index: count;
+const json_timestamps: JSON::TimestampFormat;
+const flush_period: double;
+const key_expire: count;

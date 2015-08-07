@@ -3,7 +3,11 @@ A Collection of Plugins for Bro
 ===============================
 
 This repository contains a set of Bro plugins provided by the Bro
-Project, as well as selected plugins contributed by the Bro community.
+Project, as well as plugins contributed by the Bro community.
+
+These plugins are not part of a standard Bro installation, but can be
+built and installed separately (and individually). Please note that
+some might be experimental, use at your own risk.
 
 Currently, the following plugins are available:
 
@@ -16,9 +20,13 @@ Currently, the following plugins are available:
 
    netmap - A packet source providing native netmap support <netmap/README>
 
+   pf_ring - A packet source providing native PF_RING support <pf_ring/README>
+
+   redis - A log writer adding support for a Redis backend <redis/README>
+
 Please refer to the documentation for each plugin for information on
-installation and usage, and to their COPYING files for licensing
-information. For more information and feedback, refer to the
+installation and usage; referto their COPYING files for licensing
+information. For more information and feedback, please see the
 MAINTAINER file for contact information.
 
 The Bro plugins git repository is located at `git://git.bro.org/bro-plugins.git
