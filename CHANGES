@@ -1,5 +1,5 @@
 
-0.2-9 | 2015-08-07 13:02:52 -0700
+0.2-12 | 2015-08-07 14:12:03 -0700
 
   * New plugin to adding support for logging to Redis. (Albert Zaharovits)
 
