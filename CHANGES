@@ -1,4 +1,12 @@
 
+0.2-9 | 2015-08-07 13:02:52 -0700
+
+  * New plugin to adding support for logging to Redis. (Albert Zaharovits)
+
+  * New plugin to provide native PF_RING support to Bro (Alfredo Cardigliano)
+
+  * Adapting to Bro changing config.h to bro-config.h (Robin Sommer)
+
 0.2-2 | 2015-07-16 17:24:14 -0700
 
   * Adapt netmap plugin to Bro API changes. (Jeff Barber)
