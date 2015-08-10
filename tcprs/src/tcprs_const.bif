@@ -1,0 +1,5 @@
+##! Declaration of script level constants for the TCPRS analyzer
+
+module TCPRS;
+
+const enabled: bool;

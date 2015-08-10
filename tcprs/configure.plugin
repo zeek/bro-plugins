@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# Hooks to add custom options to the configure script.
+#
+
+plugin_usage()
+{
+    : # Do nothing
+}
+
+plugin_option()
+{
+    case "$1" in
+        *)
+            return 1;
+            ;;
+    esac
+}

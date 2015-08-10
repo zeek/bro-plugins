@@ -24,6 +24,8 @@ Currently, the following plugins are available:
 
    redis - A log writer adding support for a Redis backend <redis/README>
 
+   tcprs - a TCP analyzer detecting and classifying packet retransmissions and reordering  <tcprs/README>
+
 Please refer to the documentation for each plugin for information on
 installation and usage; referto their COPYING files for licensing
 information. For more information and feedback, please see the
