@@ -1,8 +1,8 @@
 
 Bro::PF_RING
-===========
+============
 
-This plugin provides native `PF_RING <http://www.ntop.org>` support
+This plugin provides native `PF_RING <http://www.ntop.org>`_ support
 for Bro.
 
 Installation
@@ -13,7 +13,7 @@ potentially, custom drivers installed. The following will then compile
 and install the PF_RING plugin alongside Bro, assuming it can find the
 PF_RING headers in a standard location::
 
-    # ./configure && make && make install
+    ./configure && make && make install
 
 If the headers are installed somewhere non-standard, add
 ``--with-pfring=<PF_RING-base-directory>`` to the ``configure``
