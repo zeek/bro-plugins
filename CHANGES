@@ -1,4 +1,11 @@
 
+0.2-16 | 2015-08-21 16:42:20 -0700
+
+  * Fix minor typo in README. (Daniel Thayer)
+
+  * Fix doc build warnings and typos for Redis and PF_RING. (Daniel
+    Thayer)
+
 0.2-12 | 2015-08-07 14:12:03 -0700
 
   * New plugin to adding support for logging to Redis. (Albert Zaharovits)
