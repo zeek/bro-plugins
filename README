@@ -25,7 +25,7 @@ Currently, the following plugins are available:
    redis - A log writer adding support for a Redis backend <redis/README>
 
 Please refer to the documentation for each plugin for information on
-installation and usage; referto their COPYING files for licensing
+installation and usage; refer to their COPYING files for licensing
 information. For more information and feedback, please see the
 MAINTAINER file for contact information.
 

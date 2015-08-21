@@ -3,7 +3,7 @@
 Bro Redis Logging
 =================
 
-Log filter for the Redis key/value DB; see http://http://redis.io.
+Log filter for the Redis key/value DB; see http://redis.io.
 
 This is not a very common logging format for Bro, as you lose query
 ability on all log fields except the key field. One can find it useful
@@ -16,8 +16,8 @@ each log filter.
 Be aware that duplicate key values will overwrite the corresponding
 associated values.
 
-Fair warning
------------
+Warning
+-------
 
 This plugin, almost certainly, will be useful mainly for custom log
 streams (see https://www.bro.org/sphinx/frameworks/logging.html). This
@@ -25,56 +25,63 @@ code is not production ready! If there are problems with the DB
 connection, buffered data will be lost!
 
 Installing
----------
+----------
 
-First, install libhiredis library and headers. On Ubuntu do:
+First, install the libhiredis library and headers. On Ubuntu do::
 
-    # sudo apt-get install libhiredis-dev
+    sudo apt-get install libhiredis-dev
 
-To install this plugin run:
+To install this plugin run::
 
-    # ./configure --bro-dist=<path_to_bro_build> && make && sudo make install
+    ./configure --bro-dist=<path_to_bro_build> && make && sudo make install
 
-To check everything installed succesfully run:
-
-    # make test
-
-or
+To check if everything installed succesfully run::
 
     # bro -N Bro::Redis
     Bro::Redis - Redis log writer (dynamic, version 1.0)
+
+There are also a set of tests that can be run::
+
+    make test
 
 
 Howto
 -----
 
-Global default configs for all Redis filters:
-<bro_install>/lib/bro/plugins/Bro_Redis/scripts/init.bro Overwrite
-with redef statements, or setting $config tables for each filter.
+Global default configs for all Redis filters::
+
+    <bro_install>/lib/bro/plugins/Bro_Redis/scripts/init.bro
+
+Defaults can be changed with redef statements, or by setting a $config table
+for each filter.
 
 You can select the log field that will become the key, either with
 'key_index' or 'key'. With 'key' log field names will be checked and
 the first field that matches will become the key for this log stream
-(it will overwrite 'key_index'). The key can also pe prepended
+(it will overwrite 'key_index'). The key can also be prepended
 (namespaced) by setting 'key_prefix', or you can change the database
-by setting 'db'. 'unix_path' overwrites 'server_host'.
+by setting 'db'. Setting 'unix_path' overwrites 'server_host'.
 
 
 Example
 -------
 
 Filter for a custom log stream that outputs extracted file's metadata.
-The 'dump file' log field is the Redis key.
+The 'dump_file' log field is the Redis key.
 
-    local redis_filter: Log::Filter = [$name = "http-extracted-redis",
-                                       $writer = Log::WRITER_REDIS,
-                                       $config = table(["key"] = "dump_file",
-                                                       ["db"] = "4",
-                                                       ["server_host"] = "127.0.0.1",
-                                                       ["server_port"] = "6379",
-                                                       ["key_prefix"] = "",
-                                                       ["key_expire"] = "600",
-                                                       ["flush_period"] = "10")];
+.. code:: bro
+
+    local redis_filter: Log::Filter =
+                         [$name = "http-extracted-redis",
+                          $writer = Log::WRITER_REDIS,
+                          $config = table(["key"] = "dump_file",
+                                          ["db"] = "4",
+                                          ["server_host"] = "127.0.0.1",
+                                          ["server_port"] = "6379",
+                                          ["key_prefix"] = "",
+                                          ["key_expire"] = "600",
+                                          ["flush_period"] = "10")];
+
     Log::add_filter(YourLogID::LOG, redis_filter);
 
 
