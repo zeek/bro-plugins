@@ -27,6 +27,14 @@ export {
 	## Name of the ES index.
 	const index_prefix = "bro" &redef;
 
+	## Should the index names be in UTC or in local time?
+	## Setting this to true would be more compatible with Kibana and other tools.
+	const index_name_in_utc = F &redef;
+
+	## Format for the index names.
+	## Setting this to "%Y.%m.%d-%H" would be more compatible Kibana and other tools.
+	const index_name_fmt = "%Y%m%d%H%M" &redef;
+	
 	## The ES type prefix comes before the name of the related log.
 	## e.g. prefix = "bro\_" would create types of bro_dns, bro_software, etc.
 	const type_prefix = "" &redef;

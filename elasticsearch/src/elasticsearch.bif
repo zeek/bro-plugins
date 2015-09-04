@@ -8,6 +8,8 @@ const cluster_name: string;
 const server_host: string;
 const server_port: count;
 const index_prefix: string;
+const index_name_in_utc: bool;
+const index_name_fmt: string;
 const type_prefix: string;
 const transfer_timeout: interval;
 const max_batch_size: count;

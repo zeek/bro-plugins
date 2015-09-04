@@ -31,6 +31,11 @@ ElasticSearch::ElasticSearch(WriterFrontend* frontend) : WriterBackend(frontend)
 	memcpy(cluster_name, BifConst::LogElasticSearch::cluster_name->Bytes(), cluster_name_len);
 	cluster_name[cluster_name_len] = 0;
 
+	index_name_fmt_len = BifConst::LogElasticSearch::index_name_fmt->Len();
+	index_name_fmt = new char[index_name_fmt_len + 1];
+	memcpy(index_name_fmt, BifConst::LogElasticSearch::index_name_fmt->Bytes(), index_name_fmt_len);
+	index_name_fmt[index_name_fmt_len] = 0;
+
 	index_prefix = string((const char*) BifConst::LogElasticSearch::index_prefix->Bytes(), BifConst::LogElasticSearch::index_prefix->Len());
 
 	es_server = string(Fmt("http://%s:%d", BifConst::LogElasticSearch::server_host->Bytes(),
@@ -168,8 +173,11 @@ bool ElasticSearch::UpdateIndex(double now, double rinterval, double rbase)
 		struct tm tm;
 		char buf[128];
 		time_t teatime = (time_t)interval_beginning;
-		localtime_r(&teatime, &tm);
-		strftime(buf, sizeof(buf), "%Y%m%d%H%M", &tm);
+		if ( BifConst::LogElasticSearch::index_name_in_utc )
+			gmtime_r(&teatime, &tm);
+		else
+			localtime_r(&teatime, &tm);
+		strftime(buf, sizeof(buf), index_name_fmt, &tm);
 
 		prev_index = current_index;
 		current_index = index_prefix + "-" + buf;

@@ -69,6 +69,8 @@ private:
 	// From scripts
 	char* cluster_name;
 	int cluster_name_len;
+	char* index_name_fmt;
+	int index_name_fmt_len;
 
 	string es_server;
 	string bulk_url;
