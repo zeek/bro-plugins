@@ -10,6 +10,11 @@
 module LogElasticSearch;
 
 export {
+	## Destination for the ES logs.  Valid options are
+	## "direct" to directly connect to ES and "nsq" to 
+	## transfer the logs into an nsqd instance.
+	const destination = "direct" &redef;
+
 	## Name of the ES cluster.
 	const cluster_name = "elasticsearch" &redef;
 
@@ -44,4 +49,8 @@ export {
 	## The maximum byte size for a buffered JSON string to send to the bulk
 	## insert API.
 	const max_byte_size = 1024 * 1024 &redef;
+
+	## If the "nsq" destination is given, this is the topic
+	## that Bro will push logs into.
+	const nsq_topic = "bro_logs" &redef;
 }

@@ -3,6 +3,7 @@
 
 module LogElasticSearch;
 
+const destination: string;
 const cluster_name: string;
 const server_host: string;
 const server_port: count;
@@ -12,3 +13,4 @@ const transfer_timeout: interval;
 const max_batch_size: count;
 const max_batch_interval: interval;
 const max_byte_size: count;
+const nsq_topic: string;
