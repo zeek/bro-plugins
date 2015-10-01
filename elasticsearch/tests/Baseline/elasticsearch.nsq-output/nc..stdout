@@ -1,0 +1,8 @@
+POST /mput?topic=bro_logs HTTP/1.0
+Host: 127.0.0.1:4151
+Accept: */*
+Content-Type: text/json; charset=utf-8
+Content-Length: 512
+
+{"index":{"_index":"@bro-meta","_type":"index","_id":"bro-201304051800-0.0-10800.0"}}{"name":"bro-201304051800","start":1365184800.0,"end":1365195600.0}
+{"index":{"_index":"bro-201304051800","_type":"conn"}}{"_timestamp":1365191811424,"ts":1365191811424,"uid":"CXWv6p3arKYeMETxOg","id.orig_h":"127.0.0.1","id.orig_p":57067,"id.resp_h":"127.0.0.1","id.resp_p":514,"proto":"udp","conn_state":"S0","missed_bytes":0,"history":"D","orig_pkts":1,"orig_ip_bytes":71,"resp_pkts":0,"resp_ip_bytes":0,"tunnel_parents":[]}

@@ -10,6 +10,11 @@
 module LogElasticSearch;
 
 export {
+	## Destination for the ES logs.  Valid options are
+	## "direct" to directly connect to ES and "nsq" to
+	## transfer the logs into an nsqd instance.
+	const destination = "direct" &redef;
+
 	## Name of the ES cluster.
 	const cluster_name = "elasticsearch" &redef;
 
@@ -21,6 +26,14 @@ export {
 
 	## Name of the ES index.
 	const index_prefix = "bro" &redef;
+
+	## Should the index names be in UTC or in local time?
+	## Setting this to true would be more compatible with Kibana and other tools.
+	const index_name_in_utc = F &redef;
+
+	## Format for the index names.
+	## Setting this to "%Y.%m.%d-%H" would be more compatible Kibana and other tools.
+	const index_name_fmt = "%Y%m%d%H%M" &redef;
 
 	## The ES type prefix comes before the name of the related log.
 	## e.g. prefix = "bro\_" would create types of bro_dns, bro_software, etc.
@@ -44,4 +57,8 @@ export {
 	## The maximum byte size for a buffered JSON string to send to the bulk
 	## insert API.
 	const max_byte_size = 1024 * 1024 &redef;
+
+	## If the "nsq" destination is given, this is the topic
+	## that Bro will push logs into.
+	const nsq_topic = "bro_logs" &redef;
 }
