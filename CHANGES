@@ -1,4 +1,15 @@
 
+0.2-21 | 2015-10-01 16:28:52 -0700
+
+  * Add tests for ElasticSearch and NSQ. (Vlad Grigorescu)
+
+  * Allow customizing ElasticSearch index name in UTC or local time,
+    as well as ElasticSearch index format. Addresses BIT-1336. (Vlad
+    Grigorescu)
+
+  * Make ElasticSearch plugin more reliable, and support NSQ output.
+    (Vlad Grigorescu/Seth Hall)
+
 0.2-16 | 2015-08-21 16:42:20 -0700
 
   * Fix minor typo in README. (Daniel Thayer)
