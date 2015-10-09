@@ -27,7 +27,6 @@ void AF_PacketSource::Open()
 	{
 	struct ifreq ifr;
 	struct sockaddr_ll saddr_ll;
-	struct packet_mreq mreq;
 	int ret, fanout_arg;
 
 	//TODO: Opt-in for packet fanout
@@ -74,18 +73,7 @@ void AF_PacketSource::Open()
 		return;
 		}
 
-	// Set promiscuous mode
 	//TODO: Set interface to promisc
-	memset(&mreq, 0, sizeof(mreq));
-	mreq.mr_ifindex = ifr.ifr_ifindex;
-	mreq.mr_type = PACKET_MR_PROMISC;
-	ret = setsockopt(socket_fd, SOL_PACKET, PACKET_ADD_MEMBERSHIP, &mreq, sizeof(mreq));
-	if ( ret < 0 )
-		{
-		close(socket_fd);
-		Error(errno ? strerror(errno) : "failed to set socket to promiscuous mode");
-		return;
-		}
 
 	// Join fanout group
 	fanout_arg = (fanout_id | (PACKET_FANOUT_HASH << 16));
