@@ -1,0 +1,7 @@
+
+# Options for the AF_Packet packet source.
+
+module AF_Packet;
+
+const buffer_size: count;
+const fanout_id: count;

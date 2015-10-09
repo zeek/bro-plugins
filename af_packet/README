@@ -1,0 +1,35 @@
+
+Bro::AF_Packet
+==============
+
+This plugin provides native AF_Packet
+<http://man7.org/linux/man-pages/man7/packet.7.html> support for Bro.
+
+Installation
+------------
+
+Make sure the kernel headers are installed and your kernel supports
+PACKET_FANOUT and TPACKET_V3. The following will then compile and
+install the af_packet plugin alongside Bro, assuming it can find the
+kernel headers in a standard location:
+
+    # ./configure && make && make install
+
+If the headers are installed somewhere non-standard, add
+``--with-kernel=<kernel-header-directory>`` to the ``configure``
+command. If everything built and installed correctly, you should see
+this::
+
+    # bro -N Bro::AF_Packet
+    Bro::AF_Packet - Packet acquisition via AF_Packet (dynamic, version 0.1)
+
+To use AF_Packet you need to run Bro as root.
+
+Usage
+-----
+
+Once installed, you can use AF_Packet interfaces/ports by prefixing them
+with ``af_packet::`` on the command line. For example, to use AF_Packet
+to monitor interface ``eth0``:
+
+    bro -i af_packet::eth0
