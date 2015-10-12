@@ -1,4 +1,3 @@
-
 #ifndef BRO_PLUGIN_BRO_AF_PACKET
 #define BRO_PLUGIN_BRO_AF_PACKET
 
