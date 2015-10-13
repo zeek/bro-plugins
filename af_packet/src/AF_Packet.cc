@@ -1,4 +1,3 @@
-
 #include "bro-config.h"
 
 #include "AF_Packet.h"
@@ -27,11 +26,12 @@ void AF_PacketSource::Open()
 	{
 	struct ifreq ifr;
 	struct sockaddr_ll saddr_ll;
-	int ret, fanout_arg;
+	uint32_t fanout_arg;
+	int ret;
 
 	//TODO: Opt-in for packet fanout
-	int buffer_size = BifConst::AF_Packet::buffer_size;
-	int fanout_id = BifConst::AF_Packet::fanout_id;
+	uint64_t buffer_size = BifConst::AF_Packet::buffer_size;
+	uint32_t fanout_id = BifConst::AF_Packet::fanout_id;
 
 	socket_fd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));	
 
@@ -52,7 +52,7 @@ void AF_PacketSource::Open()
 
 	// Bind interface
 	memset(&ifr, 0, sizeof(ifr));
-	strcpy(ifr.ifr_name, props.path.c_str());
+	snprintf(ifr.ifr_name, sizeof(ifr.ifr_name), "%s", props.path.c_str());
 	ret = ioctl(socket_fd, SIOCGIFINDEX, &ifr);
 	if ( ret < 0 )
 		{
