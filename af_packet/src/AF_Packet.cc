@@ -1,3 +1,4 @@
+
 #include "bro-config.h"
 
 #include "AF_Packet.h"
@@ -29,11 +30,11 @@ void AF_PacketSource::Open()
 	uint32_t fanout_arg;
 	int ret;
 
-	//TODO: Opt-in for packet fanout
 	uint64_t buffer_size = BifConst::AF_Packet::buffer_size;
+	bool enable_fanout = BifConst::AF_Packet::enable_fanout;
 	uint32_t fanout_id = BifConst::AF_Packet::fanout_id;
 
-	socket_fd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));	
+	socket_fd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
 
 	if ( socket_fd < 0 )
 		{
@@ -76,17 +77,21 @@ void AF_PacketSource::Open()
 	//TODO: Set interface to promisc
 
 	// Join fanout group
-	fanout_arg = (fanout_id | (PACKET_FANOUT_HASH << 16));
-	ret = setsockopt(socket_fd, SOL_PACKET, PACKET_FANOUT,
-		&fanout_arg, sizeof(fanout_arg));
-	if ( ret < 0 )
+	if ( enable_fanout )
 		{
-		close(socket_fd);
-		Error(errno ? strerror(errno) : "failed to join fanout group");
-		return;
+		fanout_arg = (fanout_id | (PACKET_FANOUT_HASH << 16));
+		ret = setsockopt(socket_fd, SOL_PACKET, PACKET_FANOUT,
+			&fanout_arg, sizeof(fanout_arg));
+
+		if ( ret < 0 )
+			{
+			close(socket_fd);
+			Error(errno ? strerror(errno) : "failed to join fanout group");
+			return;
+			}
 		}
 
-	props.netmask = NETMASK_UNKNOWN; //FIXME?
+	props.netmask = NETMASK_UNKNOWN;
 	props.selectable_fd = socket_fd;
 	props.is_live = true;
 	props.link_type = DLT_EN10MB; // Ethernet headers
@@ -125,8 +130,6 @@ bool AF_PacketSource::ExtractNextPacket(Packet* pkt)
 		if ( ! ret )
 			return false;
 
-		//TODO: check size
-
 		current_hdr.ts.tv_sec = packet->tp_sec; //TODO: allow HW timestamps?
 		current_hdr.ts.tv_usec = packet->tp_nsec / 1000;
 		current_hdr.caplen = packet->tp_snaplen;
@@ -134,6 +137,12 @@ bool AF_PacketSource::ExtractNextPacket(Packet* pkt)
 		data = (u_char *) packet + packet->tp_mac;
 
 		pkt->Init(props.link_type, &current_hdr.ts, current_hdr.caplen, current_hdr.len, data);
+
+		if ( current_hdr.len == 0 || current_hdr.caplen == 0 )
+			{
+			Weird("empty_af_packet_header", pkt);
+			return false;
+			}
 
 		if ( ApplyBPFFilter(current_filter, &current_hdr, data) )
 			break;

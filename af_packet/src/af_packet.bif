@@ -4,4 +4,5 @@
 module AF_Packet;
 
 const buffer_size: count;
+const enable_fanout: bool;
 const fanout_id: count;
