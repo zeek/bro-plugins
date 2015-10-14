@@ -33,3 +33,8 @@ with ``af_packet::`` on the command line. For example, to use AF_Packet
 to monitor interface ``eth0``:
 
     bro -i af_packet::eth0
+
+The AF_Packet plugin does not enable promiscuous mode on interfaces,
+you'll have to do that yourself. For example, on Linux:
+
+    ifconfig eth0 promisc

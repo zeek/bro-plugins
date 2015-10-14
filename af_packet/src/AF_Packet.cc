@@ -25,14 +25,9 @@ AF_PacketSource::AF_PacketSource(const std::string& path, bool is_live)
 
 void AF_PacketSource::Open()
 	{
-	struct ifreq ifr;
-	struct sockaddr_ll saddr_ll;
-	uint32_t fanout_arg;
-	int ret;
-
 	uint64_t buffer_size = BifConst::AF_Packet::buffer_size;
+	bool enable_hw_timestamping = BifConst::AF_Packet::enable_hw_timestamping;
 	bool enable_fanout = BifConst::AF_Packet::enable_fanout;
-	uint32_t fanout_id = BifConst::AF_Packet::fanout_id;
 
 	socket_fd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
 
@@ -46,49 +41,38 @@ void AF_PacketSource::Open()
 	try {
 		rx_ring = new RX_Ring(socket_fd, buffer_size);
 	} catch (RX_RingException e) {
-		close(socket_fd);
 		Error(errno ? strerror(errno) : "unable to create RX-ring");
+		close(socket_fd);
 		return;
 	}
 
-	// Bind interface
-	memset(&ifr, 0, sizeof(ifr));
-	snprintf(ifr.ifr_name, sizeof(ifr.ifr_name), "%s", props.path.c_str());
-	ret = ioctl(socket_fd, SIOCGIFINDEX, &ifr);
-	if ( ret < 0 )
+	// Setup interface
+	if ( ! BindInterface() )
 		{
-		close(socket_fd);
-		Error(errno ? strerror(errno) : "unable to find interface");
-		return;
-		}
-
-	memset(&saddr_ll, 0, sizeof(saddr_ll));
-	saddr_ll.sll_family = AF_PACKET;
-	saddr_ll.sll_protocol = htons(ETH_P_ALL);
-	saddr_ll.sll_ifindex = ifr.ifr_ifindex;
-	ret = bind(socket_fd, (struct sockaddr *) &saddr_ll, sizeof(saddr_ll));
-	if ( ret < 0 )
-		{
-		close(socket_fd);
 		Error(errno ? strerror(errno) : "unable to bind to interface");
+		close(socket_fd);
 		return;
 		}
 
-	//TODO: Set interface to promisc
-
-	// Join fanout group
-	if ( enable_fanout )
+	if ( ! EnablePromiscMode() )
 		{
-		fanout_arg = (fanout_id | (PACKET_FANOUT_HASH << 16));
-		ret = setsockopt(socket_fd, SOL_PACKET, PACKET_FANOUT,
-			&fanout_arg, sizeof(fanout_arg));
+		Error(errno ? strerror(errno) : "unable enter promiscious mode");
+		close(socket_fd);
+		return;
+		}
 
-		if ( ret < 0 )
-			{
-			close(socket_fd);
-			Error(errno ? strerror(errno) : "failed to join fanout group");
-			return;
-			}
+	if ( ! ConfigureFanoutGroup(enable_fanout) )
+		{
+		Error(errno ? strerror(errno) : "failed to join fanout group");
+		close(socket_fd);
+		return;
+		}
+
+	if ( ! ConfigureHWTimestamping(enable_hw_timestamping) )
+		{
+		Error(errno ? strerror(errno) : "failed to configure hardware timestamping");
+		close(socket_fd);
+		return;
 		}
 
 	props.netmask = NETMASK_UNKNOWN;
@@ -99,6 +83,82 @@ void AF_PacketSource::Open()
 	num_discarded = 0;
 
 	Opened(props);
+	}
+
+inline bool AF_PacketSource::BindInterface()
+	{
+	struct ifreq ifr;
+	struct sockaddr_ll saddr_ll;
+	int ret;
+
+	memset(&ifr, 0, sizeof(ifr));
+	snprintf(ifr.ifr_name, sizeof(ifr.ifr_name), "%s", props.path.c_str());
+
+	ret = ioctl(socket_fd, SIOCGIFINDEX, &ifr);
+	if ( ret < 0 )
+		return false;
+
+	memset(&saddr_ll, 0, sizeof(saddr_ll));
+	saddr_ll.sll_family = AF_PACKET;
+	saddr_ll.sll_protocol = htons(ETH_P_ALL);
+	saddr_ll.sll_ifindex = ifr.ifr_ifindex;
+
+	ret = bind(socket_fd, (struct sockaddr *) &saddr_ll, sizeof(saddr_ll));
+	return (ret >= 0);
+	}
+
+inline bool AF_PacketSource::EnablePromiscMode()
+	{
+	//TODO: Set interface to promisc
+
+	return true;
+	}
+
+inline bool AF_PacketSource::ConfigureFanoutGroup(bool enabled)
+	{
+	if ( enabled )
+		{
+		uint32_t fanout_arg, fanout_id;
+		int ret;
+
+		fanout_id = BifConst::AF_Packet::fanout_id;
+		fanout_arg = (fanout_id | (PACKET_FANOUT_HASH << 16));
+
+		ret = setsockopt(socket_fd, SOL_PACKET, PACKET_FANOUT,
+			&fanout_arg, sizeof(fanout_arg));
+
+		if ( ret < 0 )
+			return false;
+		}
+	return true;
+	}
+
+inline bool AF_PacketSource::ConfigureHWTimestamping(bool enabled)
+	{
+	if ( enabled )
+		{
+		struct ifreq ifr;
+		struct hwtstamp_config hwts_cfg;
+		int ret, opt;
+
+		memset(&hwts_cfg, 0, sizeof(hwts_cfg));
+		hwts_cfg.tx_type = HWTSTAMP_TX_OFF;
+		hwts_cfg.rx_filter = HWTSTAMP_FILTER_ALL;
+		memset(&ifr, 0, sizeof(ifr));
+		snprintf(ifr.ifr_name, sizeof(ifr.ifr_name), "%s", props.path.c_str());
+		ifr.ifr_data = (char*) &hwts_cfg;
+
+		ret = ioctl(socket_fd, SIOCSHWTSTAMP, &ifr);
+		if ( ret < 0 )
+			return false;
+
+		opt = SOF_TIMESTAMPING_RAW_HARDWARE | SOF_TIMESTAMPING_RX_HARDWARE;
+		ret = setsockopt(socket_fd, SOL_PACKET, PACKET_TIMESTAMP,
+			&opt, sizeof(opt));
+		if( ret < 0 )
+			return false;
+		}
+	return true;
 	}
 
 void AF_PacketSource::Close()

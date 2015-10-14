@@ -7,6 +7,8 @@ module AF_Packet;
 export {
 	## Size of the ring-buffer.
 	const buffer_size = 128 * 1024 * 1024 &redef;
+	## Toggle whether to use hardware timestamps.
+	const enable_hw_timestamping = F &redef;
 	## Toggle whether to use PACKET_FANOUT.
 	const enable_fanout = T &redef;
 	## Fanout ID.

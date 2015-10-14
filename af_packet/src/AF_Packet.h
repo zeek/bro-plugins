@@ -8,12 +8,14 @@ extern "C" {
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 
-#include <errno.h>	// errorno
-#include <unistd.h>	// close()
+#include <errno.h>   // errorno
+#include <unistd.h>  // close()
 
-#include <net/if.h>			 // ifreq
-#include <net/ethernet.h>	 // ETH_P_ALL
-#include <linux/if_packet.h> // AF_PACKET, etc.
+#include <net/if.h>            // ifreq
+#include <net/ethernet.h>      // ETH_P_ALL
+#include <linux/if_packet.h>   // AF_PACKET, etc.
+#include <linux/sockios.h>     // SIOCSHWTSTAMP
+#include <linux/net_tstamp.h>  // hwtstamp_config
 }
 
 #include "iosource/PktSrc.h"
@@ -62,6 +64,11 @@ private:
 	int socket_fd;
 	RX_Ring *rx_ring;
 	struct pcap_pkthdr current_hdr;
+
+	bool BindInterface();
+	bool EnablePromiscMode();
+	bool ConfigureFanoutGroup(bool enabled);
+	bool ConfigureHWTimestamping(bool enabled);
 };
 
 }

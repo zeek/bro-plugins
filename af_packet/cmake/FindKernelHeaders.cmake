@@ -22,8 +22,8 @@ execute_process(
 
 find_path(KERNELHEADERS_ROOT_DIR
   NAMES include/linux/user.h
-  HINTS /usr/src/linux-headers-${KERNEL_RELEASE}
-  HINTS /usr/src/kernel-headers-${KERNEL_RELEASE}
+  PATHS /usr/src/linux-headers-${KERNEL_RELEASE}
+        /usr/src/kernels/${KERNEL_RELEASE}
 )
 
 include(FindPackageHandleStandardArgs)
