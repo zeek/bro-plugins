@@ -1,0 +1,3 @@
+Bro::Myricom - Packet acquisition via Myricom (dynamic, version 1.0)
+    [Packet Source] MyricomReader (interface prefix "myricom"; supports live input)
+
