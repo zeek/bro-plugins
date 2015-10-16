@@ -2,35 +2,44 @@
 Bro::Myricom
 ============
 
-This plugin provides native `PF_RING <http://www.ntop.org>`_ support
+This plugin provides native `Myricom SNF v3` support
 for Bro.
 
 Installation
 ------------
 
-Follow PF_RING's instructions to get its kernel module and,
-potentially, custom drivers installed. The following will then compile
-and install the PF_RING plugin alongside Bro, assuming it can find the
-PF_RING headers in a standard location::
+Follow Myricom's instructions to get its kernel module and userspace libraries installed.
 
-    ./configure && make && make install
+        ./configure --with-myricom=<path to sniffer sources> --bro-dist=<path to bro sources>
+        make && make install
 
-If the headers are installed somewhere non-standard, add
-``--with-pfring=<PF_RING-base-directory>`` to the ``configure``
-command. If everything built and installed correctly, you should see
+If everything built and installed correctly, you should see
 this::
 
-    # bro -N Bro::PF_RING
-    Bro::PF_RING - Packet acquisition via PF_RING (dynamic, version 1.0)
+    # bro -N Bro::Myricom
+    Bro::Myricom - Packet acquisition via Myricom SNF v3 (dynamic, version 1.0)
 
-To use PF_RING, you should run Bro as root.
+You may run Bro as unprivileged user.
 
 Usage
 -----
 
-Once installed, you can use PF_RING interfaces/ports by prefixing them
-with ``pf_ring::`` on the command line. For example, to use PF_RING to
-monitor interface ``eth0``::
+Once installed, you can use Myricom interfaces/ports by prefixing them
+with ``myricom::`` on the command line. For example, to use Myricom SNF to
+monitor interface ``p2p1``::
 
-    bro -i pf_ring::eth0
+    bro -i myricom::p2p1
 
+To use it in production with multiple Bro processes, use a configuration similar to this in node.cfg
+
+[hostname-p2p1]
+type=worker
+host=localhost
+lb_method=myricom
+lb_procs=<number of processes, like 16>
+interface=myricom::<interface name, like p2p1>
+pin_cpus=0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+# Adjust SNF_DESCRING_SIZE and SNF_DATARING_SIZE to your taste. Make sure the descriptor is 1/4 of the dataring size.
+env_vars=SNF_DEBUG_MASK=0x3,SNF_DESCRING_SIZE=4294967296,SNF_DATARING_SIZE=17179869184,SNF_NUM_RINGS=16
+
+Enjoy!

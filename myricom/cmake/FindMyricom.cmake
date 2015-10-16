@@ -4,14 +4,14 @@
 # to be set before calling find_package:
 #
 #  Myricom_ROOT_DIR          Set this variable to the root installation of
-#                            pf_ring if the module has problems finding the
+#                            libsnf if the module has problems finding the
 #                            proper installation path.
 #
 # Variables defined by this module:
 #
-#  Myricom_FOUND               System has pf_ring API files.
-#  Myricom_INCLUDE_DIR         The pf_ring include directory.
-#  Myricom_LIBRARY             The libpfring library
+#  Myricom_FOUND               System has SNF API files.
+#  Myricom_INCLUDE_DIR         The myricom snf include directory.
+#  Myricom_LIBRARY             The libsnf library
 
 find_path(MYRICOM_ROOT_DIR
     NAMES include/snf.h
