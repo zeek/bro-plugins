@@ -9,8 +9,8 @@ namespace Bro_Myricom {
 class Plugin : public ::plugin::Plugin
 {
 protected:
-	// Overridden from plugin::Plugin.
-	virtual plugin::Configuration Configure();
+    // Overridden from plugin::Plugin.
+    virtual plugin::Configuration Configure();
 };
 
 extern Plugin plugin;

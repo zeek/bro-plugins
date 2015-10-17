@@ -6,20 +6,20 @@
 using namespace iosource::pktsrc;
 
 MyricomSource::~MyricomSource()
-	{
-	Close();
-	}
+{
+    Close();
+}
 
 MyricomSource::MyricomSource(const std::string& path, bool is_live, const std::string& arg_kind)
-	{
-	if ( ! is_live )
-		Error("Myricom source does not support offline input");
+{
+    if ( ! is_live )
+        Error("Myricom source does not support offline input");
 
-	kind = arg_kind;
-	current_filter = -1;
-	props.path = path;
-	props.is_live = is_live;
-	}
+    kind = arg_kind;
+    current_filter = -1;
+    props.path = path;
+    props.is_live = is_live;
+}
 
 static inline struct timeval snf_timestamp_to_timeval(const int64_t ts_nanosec)
 {
@@ -37,7 +37,7 @@ static inline struct timeval snf_timestamp_to_timeval(const int64_t ts_nanosec)
 }
 
 void MyricomSource::Open()
-	{
+{
     uint64_t snf_num_rings = BifConst::Myricom::snf_num_rings;
     uint64_t snf_ring_size = BifConst::Myricom::snf_ring_size;
     const char * snf_rss =  reinterpret_cast<const char*>(BifConst::Myricom::snf_rss->Bytes());
@@ -49,7 +49,7 @@ void MyricomSource::Open()
     std::string ts_ext_synced = "External Timesource: synchronized";
     std::string ts_ext_failed = "External Timesource: NIC failure to connect to source";
     std::string ts_arista_active = "Arista switch is sending ptp timestamps";
-	std::string iface = props.path;
+    std::string iface = props.path;
     struct snf_ifaddrs *ifaddrs = NULL, *ifa;
     size_t devlen;
     uint32_t portnum = -1;
@@ -132,93 +132,93 @@ void MyricomSource::Open()
         return;
     }
 
-	props.netmask = 0xffffff00;
-	props.is_live = true;
-	props.link_type = DLT_EN10MB; // XXX?
+    props.netmask = 0xffffff00;
+    props.is_live = true;
+    props.link_type = DLT_EN10MB;
 
-	num_discarded = 0;
+    num_discarded = 0;
 
-	Opened(props);
-	}
+    Opened(props);
+}
 
 void MyricomSource::Close()
-	{
-	if ( ! snf_ring || ! snf_handle )
-		return;
-    
+{
+    if ( ! snf_ring || ! snf_handle )
+        return;
+
     snf_ring_close(snf_ring);
     snf_close(snf_handle);
 
     snf_handle = NULL;
-	snf_ring = NULL;
+    snf_ring = NULL;
 
-	Closed();
-	}
+    Closed();
+}
 
 bool MyricomSource::ExtractNextPacket(Packet* pkt)
-	{
+{
     struct snf_recv_req recv_req;
-	u_char *data;
-	int rc;
+    u_char *data;
+    int rc;
     int timeout_ms = 0;
 
-	if ( ! snf_ring )
-		return false;
+    if ( ! snf_ring )
+        return false;
 
-	while ( true )
-		{
-		if ( snf_ring_recv(snf_ring, timeout_ms, &recv_req) != 0 )
-			return false;
+    while ( true ) {
+        if ( snf_ring_recv(snf_ring, timeout_ms, &recv_req) != 0 )
+            return false;
 
-		current_hdr.ts = snf_timestamp_to_timeval(recv_req.timestamp);
-		current_hdr.caplen = recv_req.length;
-		current_hdr.len = recv_req.length;
+        current_hdr.ts = snf_timestamp_to_timeval(recv_req.timestamp);
+        current_hdr.caplen = recv_req.length;
+        current_hdr.len = recv_req.length;
         data = (unsigned char *) recv_req.pkt_addr;
 
-		pkt->Init(props.link_type, &current_hdr.ts, current_hdr.caplen, current_hdr.len, data);
+        pkt->Init(props.link_type, &current_hdr.ts, current_hdr.caplen, current_hdr.len, data);
 
-		if ( ApplyBPFFilter(current_filter, &current_hdr, data) )
-			break;
+        if ( ApplyBPFFilter(current_filter, &current_hdr, data) )
+            break;
 
-		++num_discarded;
-		}
+        ++num_discarded;
+    }
 
-	return true;
-	}
+    return true;
+
+}
 
 void MyricomSource::DoneWithPacket()
-	{
-        // Nothing to do.
-	}
+{
+    // Nothing to do.
+}
 
 bool MyricomSource::PrecompileFilter(int index, const std::string& filter)
-	{
-	return PktSrc::PrecompileBPFFilter(index, filter);
-	}
+{
+    return PktSrc::PrecompileBPFFilter(index, filter);
+}
 
 bool MyricomSource::SetFilter(int index)
-	{
-	current_filter = index;
-	return true;
-	}
+{
+    current_filter = index;
+
+    return true;
+}
 
 void MyricomSource::Statistics(Stats* s)
-	{
-	snf_ring_stats ps;
+{
+    snf_ring_stats ps;
 
-	if ( ! snf_ring || snf_ring_getstats(snf_ring, &ps) != 0)
-		{
-		s->received = s->link = s->dropped = 0;
-		return;
-		}
+    if ( ! snf_ring || snf_ring_getstats(snf_ring, &ps) != 0) {
+        s->received = s->link = s->dropped = 0;
+        return;
+    }
 
-	s->received = ps.ring_pkt_recv + ps.ring_pkt_overflow;
-	s->link = ps.nic_pkt_recv;
-	s->dropped = ps.ring_pkt_overflow;
-	}
+    s->received = ps.ring_pkt_recv + ps.ring_pkt_overflow;
+    s->link = ps.nic_pkt_recv;
+    s->dropped = ps.ring_pkt_overflow;
+}
 
 iosource::PktSrc* MyricomSource::InstantiateMyricom(const std::string& path, bool is_live)
-	{
-	return new MyricomSource(path, is_live, "myricom");
-	}
+{
+    return new MyricomSource(path, is_live, "myricom");
+}
 
