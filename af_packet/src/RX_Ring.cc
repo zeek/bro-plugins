@@ -5,10 +5,10 @@
 #include <utility>
 
 extern "C" {
-#include <linux/if_packet.h> // AF_PACKET, etc.
-#include <sys/socket.h> // socketopt consts
-#include <sys/mman.h> // mmap
-#include <unistd.h> // sysconf
+#include <linux/if_packet.h>  // AF_PACKET, etc.
+#include <sys/socket.h>       // socketopt consts
+#include <sys/mman.h>         // mmap
+#include <unistd.h>           // sysconf
 }
 
 RX_Ring::RX_Ring(int sock, size_t bufsize)
@@ -23,7 +23,7 @@ RX_Ring::RX_Ring(int sock, size_t bufsize)
 	if ( ret )
 		throw RX_RingException("unable to set TPacket version");
 
-	InitLayout(bufsize, 0);
+	InitLayout(bufsize);
 	ret = setsockopt(sock, SOL_PACKET, PACKET_RX_RING, (uint8_t *) &layout,
 		sizeof(layout));
 	if ( ret )
@@ -81,9 +81,6 @@ bool RX_Ring::GetNextPacket(tpacket3_hdr** hdr)
 		packet = (struct tpacket3_hdr *)
 			((uint8_t *) packet + packet->tp_next_offset);
 
-	//TODO:	Investigate whether the packet will always have a
-	//		tpacket3_hdr or if there might be variations based
-	//		on tpacket_block_desc version attribute.
 	*hdr = packet;
 	packet_num--;
 	return true;
@@ -95,14 +92,14 @@ void RX_Ring::ReleasePacket()
 		NextBlock();
 	}
 
-void RX_Ring::InitLayout(size_t bufsize, size_t snaplen)
+void RX_Ring::InitLayout(size_t bufsize)
 	{
 	memset(&layout, 0, sizeof(layout));
-	layout.tp_block_size = sysconf(_SC_PAGE_SIZE) << 2;
-	layout.tp_frame_size = TPACKET_ALIGNMENT << 7; //Try 1600 ~ snaplen?
+	layout.tp_block_size = sysconf(_SC_PAGE_SIZE) << 2; //TODO: get rid of magic value
+	layout.tp_frame_size = TPACKET_ALIGNMENT << 7; // Seems to be irrelevant for V3
 	layout.tp_block_nr = bufsize / layout.tp_block_size;
 	layout.tp_frame_nr = (layout.tp_block_size / layout.tp_frame_size) * layout.tp_block_nr;
-	layout.tp_retire_blk_tov = 100; //Timeout for blocks
+	layout.tp_retire_blk_tov = 100; // Timeout for blocks
 	}
 
 void RX_Ring::NextBlock()

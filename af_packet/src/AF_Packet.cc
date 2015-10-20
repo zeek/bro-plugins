@@ -146,7 +146,7 @@ inline bool AF_PacketSource::ConfigureHWTimestamping(bool enabled)
 		hwts_cfg.rx_filter = HWTSTAMP_FILTER_ALL;
 		memset(&ifr, 0, sizeof(ifr));
 		snprintf(ifr.ifr_name, sizeof(ifr.ifr_name), "%s", props.path.c_str());
-		ifr.ifr_data = (char*) &hwts_cfg;
+		ifr.ifr_data = &hwts_cfg;
 
 		ret = ioctl(socket_fd, SIOCSHWTSTAMP, &ifr);
 		if ( ret < 0 )
@@ -190,7 +190,7 @@ bool AF_PacketSource::ExtractNextPacket(Packet* pkt)
 		if ( ! ret )
 			return false;
 
-		current_hdr.ts.tv_sec = packet->tp_sec; //TODO: allow HW timestamps?
+		current_hdr.ts.tv_sec = packet->tp_sec;
 		current_hdr.ts.tv_usec = packet->tp_nsec / 1000;
 		current_hdr.caplen = packet->tp_snaplen;
 		current_hdr.len = packet->tp_len;

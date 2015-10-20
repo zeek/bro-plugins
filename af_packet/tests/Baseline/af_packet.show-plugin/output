@@ -1,4 +1,4 @@
-Bro::AF_Packet - Packet acquisition via AF_Packet (dynamic, version 0.1)
+Bro::AF_Packet - Packet acquisition via AF_Packet (dynamic, version 1.0)
     [Packet Source] AF_PacketReader (interface prefix "af_packet"; supports live input)
     [Constant] AF_Packet::buffer_size
     [Constant] AF_Packet::enable_hw_timestamping

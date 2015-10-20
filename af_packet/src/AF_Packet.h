@@ -11,8 +11,8 @@ extern "C" {
 #include <errno.h>   // errorno
 #include <unistd.h>  // close()
 
-#include <net/if.h>            // ifreq
 #include <net/ethernet.h>      // ETH_P_ALL
+#include <linux/if.h>          // ifreq
 #include <linux/if_packet.h>   // AF_PACKET, etc.
 #include <linux/sockios.h>     // SIOCSHWTSTAMP
 #include <linux/net_tstamp.h>  // hwtstamp_config

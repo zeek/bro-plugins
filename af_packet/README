@@ -21,7 +21,12 @@ command. If everything built and installed correctly, you should see
 this::
 
     # bro -N Bro::AF_Packet
-    Bro::AF_Packet - Packet acquisition via AF_Packet (dynamic, version 0.1)
+    Bro::AF_Packet - Packet acquisition via AF_Packet (dynamic, version 1.0)
+    [Packet Source] AF_PacketReader (interface prefix "af_packet"; supports live input)
+    [Constant] AF_Packet::buffer_size
+    [Constant] AF_Packet::enable_hw_timestamping
+    [Constant] AF_Packet::enable_fanout
+    [Constant] AF_Packet::fanout_id
 
 To use AF_Packet you need to run Bro as root.
 
@@ -38,3 +43,6 @@ The AF_Packet plugin does not enable promiscuous mode on interfaces,
 you'll have to do that yourself. For example, on Linux:
 
     ifconfig eth0 promisc
+
+To adapt the plugin to your needs, you can set a couple of parameters like
+buffer size. See scripts/init.bro for the default values.

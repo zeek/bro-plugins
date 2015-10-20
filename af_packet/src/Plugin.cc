@@ -13,7 +13,7 @@ plugin::Configuration Plugin::Configure()
 	plugin::Configuration config;
 	config.name = "Bro::AF_Packet";
 	config.description = "Packet acquisition via AF_Packet";
-	config.version.major = 0;
-	config.version.minor = 1;
+	config.version.major = 1;
+	config.version.minor = 0;
 	return config;
 	}

@@ -6,14 +6,14 @@
 extern "C" {
 #include <linux/if_packet.h> // AF_PACKET, etc.
 }
-#include <cstdint>
+#include <stdint.h>
 #include <stdexcept>
 
 #define TPACKET_VERSION TPACKET_V3
 
 class RX_RingException : public std::runtime_error {
 public:
-	using std::runtime_error::runtime_error;
+	RX_RingException(const std::string& what_arg) : std::runtime_error(what_arg) {}
 };
 
 class RX_Ring {
@@ -25,10 +25,10 @@ public:
 	~RX_Ring();
 
 	bool GetNextPacket(tpacket3_hdr** hdr);
-	void ReleasePacket(); // Maybe this one should be called by the method ExtractNextPacket before receiving in case DoneWithPacket does not work as expected.
+	void ReleasePacket();
 
 protected:
-	void InitLayout(size_t bufsize, size_t snaplen); //TODO: implement snaplen
+	void InitLayout(size_t bufsize);
 	void NextBlock();
 
 private:

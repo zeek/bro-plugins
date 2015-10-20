@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 2.6.3)
 project(Plugin)
 
 include(BroPlugin)
-include(RequireCXX11)
 
 find_package(KernelHeaders)
 
