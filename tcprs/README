@@ -1,0 +1,43 @@
+
+Extended TCP Analysis
+=====================
+
+TCPRS is TCP traffic analyzer that specializes in the detection
+and classification of retransmission and network reordering events.
+
+The following forms of events are available in the TCPRS analyzer:
+
+    - Dead connection detection
+    - TCP option detection
+    - Retransmission detection and classification
+    - Limited Transmit and Fast Recovery detection
+    - Network reordering detection and classification
+    - RTT and initial RTO measurements
+
+Policy scripts included:
+
+    - policy/protocols/tcp/tcp_analysis.bro
+
+Base scripts included:
+
+    - base/protocols/tcp/tcp_deadconn.bro
+    - base/protocols/tcp/tcp_recovery.bro
+    - base/protocols/tcp/tcp_reorderings.bro
+    - base/protocols/tcp/tcp_options.bro
+    - base/protocols/tcp/tcp_retransmissions.bro
+    - base/protocols/tcp/tcp_rtt.bro
+    - base/protocols/tcp/tcp_osfp.bro
+
+To activate all of the new functionality, load ``Bro/TCPRS``. To use
+the analyzer without the use of any of the provided scripts, you can
+enable it inside an ``bro_init`` handler::
+
+    event bro_init()
+	    {
+        TCPRS::EnableTCPRSAnalyzer();
+        }
+
+Included with the analyzer is a collection of 103 test cases that
+are used for iterative design and refinement of the analyzer. Each
+test case is used to verify a specific function of the analyzer or
+general classification of events.
