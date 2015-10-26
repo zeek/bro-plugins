@@ -1,0 +1,46 @@
+
+Bro::Myricom
+============
+
+This plugin provides native `Myricom SNF v3` support
+for Bro.
+
+Installation
+------------
+
+Follow Myricom's instructions to get its kernel module and userspace libraries installed. Then::
+
+        ./configure --with-myricom=<path to sniffer sources> --bro-dist=<path to bro sources>
+        make && make install
+
+If everything built and installed correctly, you should see
+this::
+
+    # bro -N Bro::Myricom
+    Bro::Myricom - Packet acquisition via Myricom SNF v3 (dynamic, version 1.0)
+
+You may run Bro as unprivileged user.
+
+Usage
+-----
+
+Once installed, you can use Myricom interfaces/ports by prefixing them
+with ``myricom::`` on the command line. For example, to use Myricom SNF to
+monitor interface ``p2p1``::
+
+    bro -i myricom::p2p1
+
+To use it in production with multiple Bro processes, use a
+configuration similar to this in node.cfg::
+
+    [hostname-p2p1]
+    type=worker
+    host=localhost
+    lb_method=myricom
+    lb_procs=<number of processes, like 16>
+    interface=myricom::<interface name, like p2p1>
+    pin_cpus=0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+    # Adjust SNF_DESCRING_SIZE and SNF_DATARING_SIZE to your taste. Make sure the descriptor is 1/4 of the dataring size.
+    env_vars=SNF_DEBUG_MASK=0x3,SNF_DESCRING_SIZE=4294967296,SNF_DATARING_SIZE=17179869184,SNF_NUM_RINGS=16
+
+Enjoy!
