@@ -1,4 +1,4 @@
-jswaro::tcprs - A TCP retransmission and network reordering detection and classification analyzer (dynamic, version 1.0)
+Bro::TCPRS - A TCP retransmission and network reordering detection and classification analyzer (dynamic, version 0.1)
     [Analyzer] TCPRS (ANALYZER_TCPRS, enabled)
     [Function] TCPRS::EnableTCPRSAnalyzer
     [Event] TCPRS::conn_spurious_dsack
@@ -17,6 +17,6 @@ jswaro::tcprs - A TCP retransmission and network reordering detection and classi
     [Event] TCPRS::conn_fast_recovery
     [Event] TCPRS::conn_initial_rtt
     [Event] TCPRS::conn_initial_rto
-    [Type] rtx_stats
-    Implements AddToAnalyzerTree (priority 0)
+    [Type] TCPRS::rtx_stats
+    Implements SetupAnalyzerTree (priority 0)
 
