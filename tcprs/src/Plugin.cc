@@ -22,7 +22,7 @@ plugin::Configuration Plugin::Configure()
 	return config;
 	}
 
-void Plugin::HookAddToAnalyzerTree(Connection *conn)
+void Plugin::HookSetupAnalyzerTree(Connection *conn)
 	{
 	analyzer::tcp::TCP_Analyzer* tcp = 0;
 	analyzer::TransportLayerAnalyzer* root = 0;

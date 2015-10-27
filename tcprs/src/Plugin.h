@@ -16,7 +16,7 @@ class Plugin : public ::plugin::Plugin
 protected:
 	// Overridden from plugin::Plugin.
 	virtual plugin::Configuration Configure();
-	virtual void HookAddToAnalyzerTree(Connection *conn);
+	virtual void HookSetupAnalyzerTree(Connection *conn);
 };
 
 extern Plugin plugin;
