@@ -1,8 +1,0 @@
-Bro::DataSeries - DataSeries log writer (dynamic, version 1.0)
-    [Writer] DataSeries (Log::WRITER_DATASERIES)
-    [Constant] LogDataSeries::compression
-    [Constant] LogDataSeries::extent_size
-    [Constant] LogDataSeries::dump_schema
-    [Constant] LogDataSeries::use_integer_for_time
-    [Constant] LogDataSeries::num_threads
-

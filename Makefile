@@ -3,11 +3,8 @@
 # building and testing.
 #
 
-build-all: build-dataseries build-elasticsearch build-netmap build-pf_ring build-redis build-myricom build-af_packet build-tcprs
-test-all:  test-dataseries test-elasticsearch test-netmap test-pf_ring test-redis test-myricom test-af_packet test-tcprs
-
-build-dataseries:
-	make -C dataseries
+build-all: build-elasticsearch build-netmap build-pf_ring build-redis build-myricom build-af_packet build-tcprs
+test-all:  test-elasticsearch test-netmap test-pf_ring test-redis test-myricom test-af_packet test-tcprs
 
 build-elasticsearch:
 	make -C elasticsearch
@@ -29,9 +26,6 @@ build-af_packet:
 
 build-tcprs:
 	make -C tcprs
-
-test-dataseries:
-	make -C dataseries test
 
 test-elasticsearch:
 	make -C elasticsearch test
