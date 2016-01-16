@@ -11,8 +11,6 @@ some might be experimental, and they generally also see less testing
 due to often depending on non-standard dependencies. Use at your own
 risk.
 
-Currently, the following plugins are available:
-
 .. toctree::
    :maxdepth: 1
 
