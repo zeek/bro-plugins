@@ -14,8 +14,7 @@ risk.
 .. toctree::
    :maxdepth: 1
 
-   af_packet - A packet source providing native AF_Packet support on
-   Linux. <af_packet/README>
+   af_packet - A packet source providing native AF_Packet support on Linux. <af_packet/README>
 
    elasticsearch - A log writer adding support for the Apache Lucene-based ElasticSearch database <elasticsearch/README>
 
