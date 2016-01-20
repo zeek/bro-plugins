@@ -80,6 +80,7 @@ void AF_PacketSource::Open()
 	props.is_live = true;
 	props.link_type = DLT_EN10MB; // Ethernet headers
 
+	memset(&stats, 0, sizeof(stats));
 	num_discarded = 0;
 
 	Opened(props);
