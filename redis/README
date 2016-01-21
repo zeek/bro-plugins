@@ -9,7 +9,7 @@ This is not a very common logging format for Bro, as you lose query
 ability on all log fields except the key field. One can find it useful
 to store (temporary) metadata about specific network events.
 
-All log fields get formated as a JSON string and saved as a Redis
+All log fields get formatted as a JSON string and saved as a Redis
 value. The keys for these values are another log field, selectable for
 each log filter.
 

@@ -42,8 +42,8 @@ test-redis:
 test-myricom:
 	make -C myricom test
 
-test-myricom:
-	make -C myricom test
+test-af_packet:
+	make -C af_packet test
 
 test-tcprs:
 	make -C tcprs test
