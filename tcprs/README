@@ -2,7 +2,7 @@
 Extended TCP Analysis
 =====================
 
-TCPRS is TCP traffic analyzer that specializes in the detection
+TCPRS is a TCP traffic analyzer that specializes in the detection
 and classification of retransmission and network reordering events.
 
 The following forms of events are available in the TCPRS analyzer:
@@ -16,7 +16,7 @@ The following forms of events are available in the TCPRS analyzer:
 
 To activate all of the new functionality, load ``Bro/TCPRS``. To use
 the analyzer without the use of any of the provided scripts, you can
-enable it inside an ``bro_init`` handler::
+enable it inside a ``bro_init`` handler::
 
     event bro_init()
 	    {
