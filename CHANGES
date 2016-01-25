@@ -1,4 +1,22 @@
 
+0.2-53 | 2016-01-25 15:56:45 -0800
+
+  * Add TCPRS plugin. (James Swaro)
+
+  * Removing the DataSeries log writer plugin.  (Robin Sommer)
+
+  * Adding guard to Makefiles' test targets to not fail when the plugin
+    hasn't been built. (Robin Sommer)
+
+  * Fix a duplicate Makefile target. (Daniel Thayer)
+
+  * README improvments (Johanna Amann/Daniel Thayer)
+
+  * Add README.rst -> README symlink. Addresses BIT-1413 (Johanna
+    Amann)
+
+  * Adapt tp Bro plugin API changes. (James Swaro)
+
 0.2-35 | 2015-10-26 13:36:52 -0700
 
   * New packet source plugin to provide native AF_PACKET support. (Jan
