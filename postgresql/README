@@ -39,7 +39,7 @@ example, to also push the conn.log to PostgreSQL is:
 
     event bro_init()
     {
-    	local filter: Log::Filter = [$name="postgres", $path="testdb", $writer=Log::WRITER_POSTGRESQL, $config=table(["table"]="conn")];
+    	local filter: Log::Filter = [$name="postgres", $path="conn", $writer=Log::WRITER_POSTGRESQL, $config=table(["dbname"]="testdb")];
     	Log::add_filter(Conn::LOG, filter);
     }
 

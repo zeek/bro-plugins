@@ -1,2 +1,2 @@
-# @TEST-EXEC: bro -NN Bro::Postgres >output
+# @TEST-EXEC: bro -NN Bro::PostgreSQL >output
 # @TEST-EXEC: btest-diff output

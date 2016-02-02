@@ -16,29 +16,35 @@ public:
 	PostgreSQL(WriterFrontend* frontend);
 	~PostgreSQL();
 
+	// prohibit copying and moving
+	PostgreSQL(const PostgreSQL&) = delete;
+	PostgreSQL& operator=(const PostgreSQL&) = delete;
+	PostgreSQL(PostgreSQL&&) = delete;
+
 	static WriterBackend* Instantiate(WriterFrontend* frontend)
 		{ return new PostgreSQL(frontend); }
 
 protected:
-	virtual bool DoInit(const WriterInfo& info, int num_fields,
-	const threading::Field* const* fields);
-	virtual bool DoWrite(int num_fields, const threading::Field* const* fields, threading::Value** vals);
-	virtual bool DoSetBuf(bool enabled);
-	virtual bool DoRotate(const char* rotated_path, double open, double close, bool terminating);
-	virtual bool DoFlush(double network_time);
-	virtual bool DoFinish(double network_time);
-	virtual bool DoHeartbeat(double network_time, double current_time);
+	bool DoInit(const WriterInfo& info, int num_fields, const threading::Field* const* fields) override;
+	bool DoWrite(int num_fields, const threading::Field* const* fields, threading::Value** vals) override;
+	bool DoSetBuf(bool enabled) override;
+	bool DoRotate(const char* rotated_path, double open, double close, bool terminating) override;
+	bool DoFlush(double network_time) override;
+	bool DoFinish(double network_time) override;
+	bool DoHeartbeat(double network_time, double current_time) override;
 
 private:
-	int AddParams(threading::Value* val, vector<char*> &params, string &call, int currId, bool addcomma);
+	string LookupParam(const WriterInfo& info, const string name) const;
+	std::tuple<bool, string> CreateParams(const threading::Value* val);
 	string GetTableType(int, int);
-	char* FS(const char* format, ...);
+	void CreateInsert(int num_fields, const threading::Field* const* fields);
 
 	PGconn *conn;
 
 	string table;
+	string insert;
 
-	threading::formatter::Ascii* io;
+	std::unique_ptr<threading::formatter::Ascii> io;
 };
 
 }

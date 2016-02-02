@@ -18,15 +18,13 @@ using threading::Field;
 
 PostgreSQL::PostgreSQL(WriterFrontend* frontend) : WriterBackend(frontend)
 	{
-	io = new threading::formatter::Ascii(this, threading::formatter::Ascii::SeparatorInfo());
+	io = unique_ptr<threading::formatter::Ascii>(new threading::formatter::Ascii(this, threading::formatter::Ascii::SeparatorInfo()));
 	}
 
 PostgreSQL::~PostgreSQL()
 	{
 	if ( conn != 0 )
 		PQfinish(conn);
-
-	delete io;
 	}
 
 string PostgreSQL::GetTableType(int arg_type, int arg_subtype)
@@ -45,11 +43,10 @@ string PostgreSQL::GetTableType(int arg_type, int arg_subtype)
 		type = "integer";
 		break;
 
-		/*
+	/*
 	case TYPE_PORT:
 		type = "VARCHAR(10)";
-		break;
-*/
+		break; */
 
 	case TYPE_SUBNET:
 	case TYPE_ADDR:
@@ -76,44 +73,79 @@ string PostgreSQL::GetTableType(int arg_type, int arg_subtype)
 
 	default:
 		Error(Fmt("unsupported field format %d ", arg_type));
-		return "";
+		return string();
 	}
 
 	return type;
 }
 
+// preformat the insert string that we only need to create once during our lifetime
+void PostgreSQL::CreateInsert(int num_fields, const Field* const * fields)
+	{
+	string names = "INSERT INTO "+table+" ( ";
+	string values("VALUES (");
+
+	for ( int i = 0; i < num_fields; ++i )
+		{
+		string fieldname = fields[i]->name;
+		replace( fieldname.begin(), fieldname.end(), '.', '_' ); // postgres does not like "." in row names.
+
+		if ( i != 0 )
+			{
+			values += ", ";
+			names += ", ";
+			}
+
+		names += fieldname;
+		values += "$" + std::to_string(i+1);
+		}
+
+	insert = names + ") " + values + ");";
+	}
+
+string PostgreSQL::LookupParam(const WriterInfo& info, const string name) const
+	{
+	map<const char*, const char*>::const_iterator it = info.config.find(name.c_str());
+	if ( it == info.config.end() )
+		return string();
+	else
+		return it->second;
+	}
 
 bool PostgreSQL::DoInit(const WriterInfo& info, int num_fields,
 			    const Field* const * fields)
 	{
-	string hostname;
-	map<const char*, const char*>::const_iterator it = info.config.find("hostname");
-	if ( it == info.config.end() )
+	table = info.path;
+	string conninfo = LookupParam(info, "conninfo");
+	if ( conninfo.empty() )
 		{
-		MsgThread::Info(Fmt("hostname configuration option not found. Defaulting to localhost"));
-		hostname = "localhost";
+		string hostname = LookupParam(info, "hostname");
+		if ( hostname.empty() )
+			{
+			MsgThread::Info(Fmt("hostname configuration option not found. Defaulting to localhost"));
+			hostname = "localhost";
+			}
+
+		string dbname = LookupParam(info, "dbname");
+		if ( dbname.empty() )
+			{
+			MsgThread::Error(Fmt("dbname configuration option not found."));
+			return false;
+			}
+
+		conninfo = string("host = ") + hostname + " dbname = " + dbname;
+
+		string port = LookupParam(info, "port");
+		if ( ! port.empty() )
+			conninfo += " port = " + port;
 		}
-	else
-		hostname = it->second;
 
-	it = info.config.find("table");
-	if ( it == info.config.end() )
-		{
-		MsgThread::Error(Fmt("table configuration option not found."));
-		return 0;
-		}
-	else
-		table = it->second;
-
-
-	const char *conninfo = Fmt("host = %s dbname = %s", hostname.c_str(), info.path);
-	conn = PQconnectdb(conninfo);
+	conn = PQconnectdb(conninfo.c_str());
 
 	if ( PQstatus(conn) != CONNECTION_OK )
 		{
-		printf("Could not connect to pg: %s\n", PQerrorMessage(conn));
-		InternalError(Fmt("Could not connect to pg: %s", PQerrorMessage(conn)));
-		assert(false);
+		Error(Fmt("Could not connect to pg (%s): %s", conninfo.c_str(), PQerrorMessage(conn)));
+		return false;
 		}
 
 	string create = "CREATE TABLE IF NOT EXISTS "+table+" (\n"
@@ -139,14 +171,14 @@ bool PostgreSQL::DoInit(const WriterInfo& info, int num_fields,
 
 	create += "\n);";
 
-	printf("Create: %s\n", create.c_str());
 	PGresult *res = PQexec(conn, create.c_str());
 	if ( PQresultStatus(res) != PGRES_COMMAND_OK)
 		{
-		printf("Command failed: %s\n", PQerrorMessage(conn));
-		assert(false);
+		Error(Fmt("Create command failed: %s\n", PQerrorMessage(conn)));
+		return false;
 		}
 
+	CreateInsert(num_fields, fields);
 
 	return true;
 	}
@@ -166,183 +198,167 @@ bool PostgreSQL::DoHeartbeat(double network_time, double current_time)
 	return true;
 	}
 
-// Format String
-char* PostgreSQL::FS(const char* format, ...) {
-	char * buf;
-
-	va_list al;
-	va_start(al, format);
-	int n = vasprintf(&buf, format, al);
-	va_end(al);
-
-	assert(n >= 0);
-
-	return buf;
-}
-
-int PostgreSQL::AddParams(Value* val, vector<char*> &params, string &call, int currId, bool addcomma)
+std::tuple<bool, string> PostgreSQL::CreateParams(const Value* val)
 	{
-
-	if ( addcomma )
-		call += ", ";
-
 	if ( ! val->present )
-		{
-		call += "NULL";
-		return currId;
-		}
+		return std::make_tuple(false, string());
+
+	string retval;
 
 	switch ( val->type ) {
 
 	case TYPE_BOOL:
-		params.push_back(FS("%s", val->val.int_val ? "T" : "F"));
-		call += Fmt("$%d", currId);
-		return ++currId;
+		retval = val->val.int_val ? "T" : "F";
+		break;
 
 	case TYPE_INT:
-		params.push_back(FS("%d", val->val.int_val));
-		call += Fmt("$%d", currId);
-		return ++currId;
+		retval = std::to_string(val->val.int_val);
+		break;
 
 	case TYPE_COUNT:
 	case TYPE_COUNTER:
-		params.push_back(FS("%d", val->val.uint_val));
-		call += Fmt("$%d", currId);
-		return ++currId;
+		retval = std::to_string(val->val.uint_val);
+		break;
 
 	case TYPE_PORT:
-		params.push_back(FS("%d", val->val.port_val.port));
-		call += Fmt("$%d", currId);
-		return ++currId;
+		retval = std::to_string(val->val.port_val.port);
+		break;
 
 	case TYPE_SUBNET:
-		call += "'";
-		call += io->Render(val->val.subnet_val);
-		call += "'";
-		return currId;
+		retval = io->Render(val->val.subnet_val);
+		break;
 
 	case TYPE_ADDR:
-		call += "'";
-		call += io->Render(val->val.addr_val);
-		call += "'";
-		return currId;
+		retval = io->Render(val->val.addr_val);
+		break;
 
 	case TYPE_TIME:
 	case TYPE_INTERVAL:
 	case TYPE_DOUBLE:
-		params.push_back(FS("%f", val->val.double_val));
-		call += Fmt("$%d", currId);
-		return ++currId;
+		retval = std::to_string(val->val.double_val);
+		break;
 
 	case TYPE_ENUM:
 	case TYPE_STRING:
 	case TYPE_FILE:
 	case TYPE_FUNC:
-		{
-		if ( ! val->val.string_val.length || val->val.string_val.length == 0 ) {
-			call += "NULL";
-			return currId;
-		}
+		if ( ! val->val.string_val.length || val->val.string_val.length == 0 )
+			return std::make_tuple(false, string());
 
-		//params.push_back(FS("%s", val->val.string_val.data));
-		//call += Fmt("$%d", currId);
-		char * escaped = PQescapeLiteral(conn, val->val.string_val.data, val->val.string_val.length);
-		call += escaped;
-		PQfreemem(escaped);
-		return currId;
-		}
+		retval = string(val->val.string_val.data, val->val.string_val.length);
+		break;
 
 	case TYPE_TABLE:
-		{
-		if ( ! val->val.set_val.size )
-			{
-			call += "NULL";
-			return currId;
-			}
-
-		call += "ARRAY[";
-		for ( int j = 0; j < val->val.set_val.size; j++ )
-			{
-			bool ac = true;
-			if ( j == 0 )
-				ac = false;
-
-			currId = AddParams(val->val.set_val.vals[j], params, call, currId, ac);
-			call += "::"+GetTableType(val->val.set_val.vals[j]->type, 0);
-			}
-		call += "]";
-
-		return currId;
-		}
-
 	case TYPE_VECTOR:
 		{
-		if ( ! val->val.vector_val.size )
+		bro_int_t size;
+		Value** vals;
+
+		string out("{");
+
+		if ( val->type == TYPE_TABLE )
 			{
-			call += "NULL";
-			return currId;
+			size = val->val.set_val.size;
+			vals = val->val.set_val.vals;
+			}
+		else
+			{
+			size = val->val.vector_val.size;
+			vals = val->val.vector_val.vals;
 			}
 
+		if ( ! size )
+			return std::make_tuple(false, string());
 
-		call += "ARRAY[";
-		for ( int j = 0; j < val->val.vector_val.size; j++ )
+		for ( int i = 0; i < size; ++i )
 			{
-			bool ac = true;
-			if ( j == 0 )
-				ac = false;
+			if ( i != 0 )
+				out += ", ";
 
-			currId = AddParams(val->val.vector_val.vals[j], params, call, currId, ac);
-			call += "::"+GetTableType(val->val.vector_val.vals[j]->type, 0);
+			auto res = CreateParams(vals[i]);
+			if ( std::get<0>(res) == false )
+				{
+				out += "NULL";
+				continue;
+				}
+
+			string resstr = std::get<1>(res);
+			TypeTag type = vals[i]->type;
+			// for all numeric types, we do not need escaping
+			if ( type == TYPE_BOOL || type == TYPE_INT || type == TYPE_COUNT ||
+					type == TYPE_COUNTER || type == TYPE_PORT || type == TYPE_TIME ||
+					type == TYPE_INTERVAL || type == TYPE_DOUBLE )
+				out += resstr;
+			else
+				{
+				char* escaped = PQescapeLiteral(conn, resstr.c_str(), resstr.size());
+				if ( escaped == nullptr )
+					{
+					Error(Fmt("Error while escaping '%s'", resstr.c_str()));
+					return std::make_tuple(false, string());
+					}
+				else
+					{
+					out += escaped;
+					PQfreemem(escaped);
+					}
+				}
 			}
-		call += "]";
 
-		return currId;
+		out += "}";
+		retval = out;
+		break;
 		}
 
 	default:
 		Error(Fmt("unsupported field format %d", val->type ));
-		return 0;
-	}
+		return std::make_tuple(false, string());
 	}
 
-bool PostgreSQL::DoWrite(int num_fields, const Field* const * fields, Value** vals)
+	return std::make_tuple(true, retval);
+	}
+
+bool PostgreSQL::DoWrite(int num_fields, const Field* const* fields, Value** vals)
 	{
-	vector<char*> params;
-
-	string insert = "VALUES (";
-	string names = "INSERT INTO "+table+" ( ";
-
-
-	int currId = 1;
-	for ( int i = 0; i < num_fields; i++ )
-		{
-			bool ac = true;
-
-			if ( i == 0 )
-				ac = false;
-			else
-				names += ", ";
-
-			currId = AddParams(vals[i], params, insert, currId, ac);
-			string fieldname = fields[i]->name;
-			replace( fieldname.begin(), fieldname.end(), '.', '_' ); // postgres does not like "." in row names.
-			names += fieldname;
-		}
-	insert += ");";
-	names += ") ";
-
-	insert = names + insert;
-
-
 	printf("Call: %s\n", insert.c_str());
+	vector<std::tuple<bool, string>> params; // vector in which we compile the string representation of characters
+
+	for ( int i = 0; i < num_fields; ++i )
+		params.push_back(CreateParams(vals[i]));
+
+	vector<const char*> params_char; // vector in which we compile the character pointers that we
+	// then pass to PQexecParams. These do not have to be cleaned up because the srings will be
+	// cleaned up automatically.
+
+	for ( auto &i: params )
+		{
+		if ( std::get<0>(i) == false)
+			params_char.push_back(nullptr); // null pointer is accepted to signify NULL in parameters
+		else
+			params_char.push_back(std::get<1>(i).c_str());
+		}
+
+	assert( params_char.size() == num_fields );
+
 	// & of vector is legal - according to current STL standard, vector has to be saved in consecutive memory.
-	PGresult *res = PQexecParams(conn, insert.c_str(), params.size(), NULL, &params[0], NULL, NULL, 0);
+	PGresult *res = PQexecParams(conn,
+			insert.c_str(),
+			params_char.size(),
+			NULL,
+			&params_char[0],
+			NULL,
+			NULL,
+			0);
+
 	if ( PQresultStatus(res) != PGRES_COMMAND_OK)
 		{
 		printf("Command failed: %s\n", PQerrorMessage(conn));
-		assert(false);
+		Error(Fmt("Command failed: %s\n", PQerrorMessage(conn)));
+		PQclear(res);
+		return false;
 		}
 
+	PQclear(res);
 	return true;
 	}
 

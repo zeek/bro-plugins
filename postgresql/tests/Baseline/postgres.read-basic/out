@@ -1,0 +1,11 @@
+[b=T, i=-42, e=SSH::LOG, c=21, p=123/unknown, sn=10.0.0.0/24, a=1.2.3.4, d=3.14, t=1454444233.58016, iv=100.0, s=hurz, sc={
+0,
+4,
+1,
+3
+}, ss={
+{'CC',
+'AA',
+'BB'}
+}, se=<uninitialized>, vc=[0, 20, 30], ve=<uninitialized>]
+End of data

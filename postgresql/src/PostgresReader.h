@@ -14,35 +14,36 @@ namespace input { namespace reader {
 
 class PostgreSQL : public ReaderBackend {
 public:
-	PostgreSQL(ReaderFrontend* frontend);
+	explicit PostgreSQL(ReaderFrontend* frontend);
 	~PostgreSQL();
+
+	// prohibit copying and moving
+	PostgreSQL(const PostgreSQL&) = delete;
+	PostgreSQL& operator=(const PostgreSQL&) = delete;
+	PostgreSQL(PostgreSQL&&) = delete;
 
 	static ReaderBackend* Instantiate(ReaderFrontend* frontend) { return new PostgreSQL(frontend); }
 
 protected:
-	virtual bool DoInit(const ReaderInfo& info, int arg_num_fields, const threading::Field* const* fields);
+	bool DoInit(const ReaderInfo& info, int arg_num_fields, const threading::Field* const* fields) override;
 
-	virtual void DoClose();
+	void DoClose() override;
 
-	virtual bool DoUpdate();
-	virtual bool DoHeartbeat(double network_time, double current_time);
+	bool DoUpdate() override;
+
+	bool DoHeartbeat(double network_time, double current_time) override;
 
 private:
 
-	unsigned int num_fields;
-
-	const threading::Field* const * fields; // raw mapping
-
-	threading::Value* EntryToVal(string s, const threading::Field *type);
-
-	int mode;
-
-	bool started;
-	string query;
+	string LookupParam(const ReaderInfo& info, const string name) const;
+	std::unique_ptr<threading::Value> EntryToVal(string s, const threading::Field* type);
 
 	PGconn *conn;
+	std::unique_ptr<threading::formatter::Ascii> io;
 
-	threading::formatter::Ascii* io;
+	const threading::Field* const * fields; // raw mapping
+	string query;
+	int num_fields;
 };
 
 
