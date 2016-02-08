@@ -1,4 +1,8 @@
 
+0.2-59 | 2016-02-08 12:32:23 -0800
+
+  * Capitalize Myricom_ROOT_DIR in configure.plugin. (Keith Butler)
+
 0.2-53 | 2016-01-25 15:56:45 -0800
 
   * Add TCPRS plugin. (James Swaro)
