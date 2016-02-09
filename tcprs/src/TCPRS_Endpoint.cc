@@ -1171,10 +1171,10 @@ SCORE* TCPRS_Endpoint::scoreRetransmission(SequenceRange* seq,
 
 				double confidence_value = UNDEFINED;
 				double proximity = UNDEFINED;
-				uint32 i_to_end = (
+				int i_to_end = (
 						(dup->getDupCount() >= ACK_COUNT) ?
 								ACK_COUNT : dup->getDupCount());
-				for (unsigned int i = 0; i < i_to_end; i++) {
+				for (int i = 0; i < i_to_end; i++) {
 					proximity = fabs(target - dup->getTS(i)) / min_dist;    //Ratio
 					confidence_value = 1.0 / (1.0 + proximity);
 					confidence_value *= 1.0 / (abs(i - TRIPLE) + 1.0); //ack distancing
