@@ -1,7 +1,7 @@
 SSDP Analyzer
 =================================
 
-This plugin is an SSDP protocol analyzer for Bro. The analyzer parses the discovery phase of the SSDP protocol. When used for processing SSDP network traffic, this plugin will generate ssdp.log-- the log contains the type of SSDP discovery message (REQUEST or RESPONSE), all headers seen in the message, and metadata relevant to the message (location of the description file, USN, server information, etc). 
+This plugin is an SSDP protocol analyzer for Bro. The analyzer parses the discovery phase of the SSDP protocol. When used for processing SSDP network traffic, this plugin will generate ssdp.log-- the log contains the SSDP discovery method (NOTIFY or M-SEARCH), all headers seen in the message, and metadata relevant to the message (location of the description file, USN, server information, etc). 
 
 Note that SSDP network traffic may represent a significant portion of overall network traffic, so caution is advised if deploying this analyzer in a production environment-- it is possible that this analyzer will generate large ssdp.log files. Profiling overall network traffic by searching conn.log for any UDP connections on port 1900 to get a sense of how much potential traffic will be parsed with this analyzer plugin is recommended. Whitelisting of specific values will reduce the log output of the analyzer (whitelisting functionality doesn't currently exist, but can be added to scripts/main.bro).
 
