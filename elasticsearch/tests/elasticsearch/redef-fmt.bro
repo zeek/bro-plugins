@@ -1,5 +1,5 @@
 # @TEST-REQUIRES: which nc
-# @TEST-EXEC: btest-bg-run nc nc -l 9200
+# @TEST-EXEC: btest-bg-run nc $SCRIPTS/run-nc 9200
 # @TEST-EXEC: bro -r $TRACES/syslog-single-udp.trace %INPUT
 # @TEST-EXEC: btest-bg-wait -k 5
 
