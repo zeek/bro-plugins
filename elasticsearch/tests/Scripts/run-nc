@@ -1,0 +1,11 @@
+#! /bin/sh
+
+listen_port=$1
+
+# First try the traditional netcat (this is the default netcat on debian)
+nc -l -p $listen_port 2>/dev/null
+
+if [ $? -ne 0 ]; then
+    # Traditional netcat failed, so try the netcat that everyone else uses
+    nc -l $listen_port
+fi
