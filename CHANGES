@@ -1,4 +1,15 @@
 
+0.2-72 | 2016-03-10 13:22:26 -0800
+
+  * af_packet: Updated README. (Jan Grashoefer)
+
+  * af_packet: Automatically enable promiscuous mode. Socket is now
+    set to promiscuous mode using PACKET_ADD_MEMBERSHIP. This will not
+    be reflected by the interface flags but will show up in the kernel
+    log. (Jan Grashoefer)
+
+  * af_packet: Fixed initialization of statistics. (Jan Grashoefer)
+
 0.2-66 | 2016-03-10 12:05:13 -0800
 
   * Add plugin to write log output to Kafka. (Nick Allen)
