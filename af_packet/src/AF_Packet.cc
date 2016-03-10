@@ -80,6 +80,7 @@ void AF_PacketSource::Open()
 	props.is_live = true;
 	props.link_type = DLT_EN10MB; // Ethernet headers
 
+	memset(&stats, 0, sizeof(stats));
 	num_discarded = 0;
 
 	Opened(props);
@@ -109,9 +110,23 @@ inline bool AF_PacketSource::BindInterface()
 
 inline bool AF_PacketSource::EnablePromiscMode()
 	{
-	//TODO: Set interface to promisc
+	struct ifreq ifr;
+	struct packet_mreq mreq;
+	int ret;
 
-	return true;
+	memset(&ifr, 0, sizeof(ifr));
+	snprintf(ifr.ifr_name, sizeof(ifr.ifr_name), "%s", props.path.c_str());
+
+	ret = ioctl(socket_fd, SIOCGIFINDEX, &ifr);
+	if ( ret < 0 )
+		return false;
+
+	memset(&mreq, 0, sizeof(mreq));
+	mreq.mr_ifindex = ifr.ifr_ifindex;
+	mreq.mr_type = PACKET_MR_PROMISC;
+
+	ret = setsockopt(socket_fd, SOL_PACKET, PACKET_ADD_MEMBERSHIP, &mreq, sizeof(mreq));
+	return (ret >= 0);
 	}
 
 inline bool AF_PacketSource::ConfigureFanoutGroup(bool enabled)
