@@ -1,4 +1,15 @@
 
+0.2-66 | 2016-03-10 12:05:13 -0800
+
+  * Add plugin to write log output to Kafka. (Nick Allen)
+
+  * Fix failing ElasticSearch tests due to netcat. (Daniel Thayer)
+
+  * Fix compile error by replacing u_char with uint8_t. (Johanna
+    Amann)
+
+  * Fixed 'abs' ambiguity. (James Swaro)
+
 0.2-59 | 2016-02-08 12:32:23 -0800
 
   * Capitalize Myricom_ROOT_DIR in configure.plugin. (Keith Butler)
