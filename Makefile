@@ -3,8 +3,8 @@
 # building and testing.
 #
 
-build-all: build-elasticsearch build-netmap build-pf_ring build-redis build-myricom build-af_packet build-tcprs
-test-all:  test-elasticsearch test-netmap test-pf_ring test-redis test-myricom test-af_packet test-tcprs
+build-all: build-elasticsearch build-netmap build-pf_ring build-redis build-myricom build-af_packet build-tcprs build-kafka
+test-all:  test-elasticsearch test-netmap test-pf_ring test-redis test-myricom test-af_packet test-tcprs test-kafka
 
 build-elasticsearch:
 	make -C elasticsearch
@@ -27,6 +27,9 @@ build-af_packet:
 build-tcprs:
 	make -C tcprs
 
+build-kafka:
+	make -C kafka
+
 test-elasticsearch:
 	make -C elasticsearch test
 
@@ -47,3 +50,6 @@ test-af_packet:
 
 test-tcprs:
 	make -C tcprs test
+
+test-kafka:
+	make -C kafka test
