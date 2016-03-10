@@ -28,7 +28,10 @@ this::
     [Constant] AF_Packet::enable_fanout
     [Constant] AF_Packet::fanout_id
 
-To use AF_Packet you need to run Bro as root.
+To use AF_Packet you need to give the Bro processes the CAP_NET_RAW capability if running as non-root.
+You can set it with the following command (on each sensor, after broctl install).
+
+setcap cap_net_raw+eip <path_to_bro>/bin/bro
 
 Usage
 -----

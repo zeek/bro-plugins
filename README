@@ -7,22 +7,27 @@ Project, as well as plugins contributed by the Bro community.
 
 These plugins are not part of a standard Bro installation, but can be
 built and installed separately (and individually). Please note that
-some might be experimental, use at your own risk.
-
-Currently, the following plugins are available:
+some might be experimental, and they generally also see less testing
+due to often depending on non-standard dependencies. Use at your own
+risk.
 
 .. toctree::
    :maxdepth: 1
 
-   dataseries - A log writer adding support for HP Labs' DataSeries binary format <dataseries/README>
+   af_packet - A packet source providing native AF_Packet support on Linux. <af_packet/README>
 
    elasticsearch - A log writer adding support for the Apache Lucene-based ElasticSearch database <elasticsearch/README>
+
+   myricom - A packet source providing native `Myricom SNF v3` support <myricom/README>
 
    netmap - A packet source providing native netmap support <netmap/README>
 
    pf_ring - A packet source providing native PF_RING support <pf_ring/README>
 
    redis - A log writer adding support for a Redis backend <redis/README>
+
+   tcprs - A TCP retransmission and network reordering analyzer <tcprs/README>
+
 
 Please refer to the documentation for each plugin for information on
 installation and usage; refer to their COPYING files for licensing

@@ -14,7 +14,7 @@ extern "C" {
 RX_Ring::RX_Ring(int sock, size_t bufsize)
 	{
 	int ret, ver = TPACKET_VERSION;
-	
+
 	if ( sock < 0 )
 		throw RX_RingException("invalid socket");
 
@@ -60,10 +60,10 @@ RX_Ring::~RX_Ring()
 bool RX_Ring::GetNextPacket(tpacket3_hdr** hdr)
 	{
 	struct tpacket_hdr_v1 *block_hdr = &(blocks[block_num]->hdr.bh1);
-	
+
 	if ( (block_hdr->block_status & TP_STATUS_USER) == 0 )
 		return false;
-	
+
 	if ( packet == NULL )
 		{
 		// New block
@@ -87,7 +87,7 @@ bool RX_Ring::GetNextPacket(tpacket3_hdr** hdr)
 	}
 
 void RX_Ring::ReleasePacket()
-	{	
+	{
 	if ( packet_num == 0 )
 		NextBlock();
 	}
