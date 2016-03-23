@@ -36,12 +36,14 @@ protected:
     virtual bool DoHeartbeat(double network_time, double current_time);
 
 private:
+    static const string default_topic_key;
+    string stream_id;
     string topic_name;
     threading::formatter::Formatter *formatter;
-    RdKafka::Producer* producer;
-    RdKafka::Topic* topic;
-    RdKafka::Conf* conf;
-    RdKafka::Conf* topic_conf;
+    RdKafka::Producer* rd_producer;
+    RdKafka::Topic* rd_topic;
+    RdKafka::Conf* rd_conf;
+    RdKafka::Conf* rd_topic_conf;
 };
 
 }}
