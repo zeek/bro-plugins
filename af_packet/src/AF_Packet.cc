@@ -196,13 +196,9 @@ bool AF_PacketSource::ExtractNextPacket(Packet* pkt)
 	struct tpacket3_hdr *packet = 0;
 	const u_char *data;
 	struct timeval ts;
-	bool ret;
-
 	while ( true )
 		{
-		ret = rx_ring->GetNextPacket(&packet);
-
-		if ( ! ret )
+		if ( ! rx_ring->GetNextPacket(&packet) )
 			return false;
 
 		current_hdr.ts.tv_sec = packet->tp_sec;
@@ -214,6 +210,7 @@ bool AF_PacketSource::ExtractNextPacket(Packet* pkt)
 		if ( !ApplyBPFFilter(current_filter, &current_hdr, data) )
 			{
 			++num_discarded;
+			DoneWithPacket();
 			continue;
 			}
 
@@ -224,7 +221,7 @@ bool AF_PacketSource::ExtractNextPacket(Packet* pkt)
 			Weird("empty_af_packet_header", pkt);
 			return false;
 			}
-		
+
 		stats.received++;
 		stats.bytes_received += current_hdr.len;
 		return true;
@@ -269,7 +266,7 @@ void AF_PacketSource::Statistics(Stats* s)
 		return;
 		}
 
-	stats.link += tp_stats.tp_packets;
+	stats.link += tp_stats.tp_packets + num_discarded;
 	stats.dropped += tp_stats.tp_drops;
 
 	memcpy(s, &stats, sizeof(Stats));
