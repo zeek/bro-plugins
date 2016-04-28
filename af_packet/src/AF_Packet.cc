@@ -266,7 +266,7 @@ void AF_PacketSource::Statistics(Stats* s)
 		return;
 		}
 
-	stats.link += tp_stats.tp_packets + num_discarded;
+	stats.link += tp_stats.tp_packets;
 	stats.dropped += tp_stats.tp_drops;
 
 	memcpy(s, &stats, sizeof(Stats));
