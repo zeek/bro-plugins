@@ -18,7 +18,7 @@ risk.
 
    elasticsearch - A log writer adding support for the Apache Lucene-based ElasticSearch database <elasticsearch/README>
 
-   kafka - A log writer that sends logging output to Kafka <kafka/README>.
+   kafka - A log writer that sends logging output to Kafka <kafka/README>
 
    myricom - A packet source providing native `Myricom SNF v3` support <myricom/README>
 
