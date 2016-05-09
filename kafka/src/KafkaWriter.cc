@@ -98,8 +98,9 @@ bool KafkaWriter::DoFinish(double network_time)
 
     // successful only if all messages delivered
     if (rd_producer->outq_len() == 0) {
-        reporter->Error("Unable to deliver %0d message(s)", rd_producer->outq_len());
         success = true;
+    } else {
+        reporter->Error("Unable to deliver %0d message(s)", rd_producer->outq_len());
     }
 
     delete rd_topic;
