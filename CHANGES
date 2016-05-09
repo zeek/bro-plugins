@@ -1,4 +1,9 @@
 
+0.2-75 | 2016-05-07 12:15:43 -0700
+
+  * BIT-1543: Updated README for Kafka writer to include compatible
+    librdkafka versions. (Nick Allen)
+
 0.2-72 | 2016-03-10 13:22:26 -0800
 
   * af_packet: Updated README. (Jan Grashoefer)
