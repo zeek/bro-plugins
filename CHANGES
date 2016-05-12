@@ -1,4 +1,16 @@
 
+0.2-84 | 2016-05-12 07:10:27 -0700
+
+  * Fix to get kafka plugin to be visible in the docs. (Daniel Thayer)
+
+  * BIT-1586 Fixed thread-safety issues with Kafka Writer. (Nick Allen)
+
+  * Fix a tiny logic error that shows up when shutting down the
+    Kafka Writer. (Seth Hall)
+
+  * BIT-1559 allow users to define different kafka topics for each
+    log-stream. (Nick Allen)
+
 0.2-75 | 2016-05-07 12:15:43 -0700
 
   * BIT-1543: Updated README for Kafka writer to include compatible
