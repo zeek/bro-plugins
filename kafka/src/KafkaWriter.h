@@ -39,6 +39,8 @@ private:
     static const string default_topic_key;
     string stream_id;
     string topic_name;
+    bool tag_json;
+    map<string, string> kafka_conf;
     threading::formatter::Formatter *formatter;
     RdKafka::Producer* rd_producer;
     RdKafka::Topic* rd_topic;
