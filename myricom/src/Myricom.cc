@@ -20,11 +20,12 @@ MyricomSource::MyricomSource(const std::string& path, bool is_live, const std::s
 
     int colon = path.find(":");
     if ( colon > 0 ) {
-        iface = path.substr(0,colon).c_str();
+        iface = path.substr(0,colon);
         ring_num = atoi(path.substr(colon+1,-1).c_str());
     } else {
         // -1 is a special number that makes it just open any available ring.
         ring_num = -1;
+        iface = path;
     }
 
     props.path = iface;
@@ -53,32 +54,26 @@ void MyricomSource::Open()
     uint64_t snf_ring_size = BifConst::Myricom::snf_ring_size;
     uint64_t snf_app_id = BifConst::Myricom::snf_app_id;
     snf_link_state snf_link_isup;
-    snf_timesource_state snf_timesource_active;
-    std::string ts_local = "Local timesource (no external)";
-    std::string ts_ext_unsynced = "External Timesource: not synchronized (yet)";
-    std::string ts_ext_synced = "External Timesource: synchronized";
-    std::string ts_ext_failed = "External Timesource: NIC failure to connect to source";
-    std::string ts_arista_active = "Arista switch is sending ptp timestamps";
     struct snf_ifaddrs *ifaddrs = NULL, *ifa;
     uint32_t portnum = -1;
 
     if ( snf_init(SNF_VERSION_API) != 0) {
-        Error(errno ? strerror(errno) : "SNF: failed in snf_init");
+        Error(errno ? strerror(errno) : "Myricom: failed in snf_init");
         return;
     }
 
     if ( snf_getifaddrs(&ifaddrs) != 0 ) {
-        Error(errno ? strerror(errno) : "SNF: failed in snf_getifaddrs");
+        Error(errno ? strerror(errno) : "Myricom: failed in snf_getifaddrs");
         return;
     }
 
     if ( snf_set_app_id(snf_app_id & 0xFFFFFFFF) ) {
-        Error(errno ? strerror(errno) : "SNF: failed in snf_set_app_id");
+        Error(errno ? strerror(errno) : "Myricom: failed in snf_set_app_id");
         return;
     }
 
     if ( snf_getifaddrs(&ifaddrs) ) {
-        Error(errno ? strerror(errno) : "SNF: failed in snf_getifaddrs");
+        Error(errno ? strerror(errno) : "Myricom: failed in snf_getifaddrs");
         return;
     }
     ifa = ifaddrs;
@@ -92,7 +87,7 @@ void MyricomSource::Open()
     snf_freeifaddrs(ifaddrs);
 
     if ( ifa == NULL ) {
-        Error(errno ? strerror(errno) : "SNF: failed to map the interface to the board number");
+        Error(errno ? strerror(errno) : "Myricom: failed to map the interface to the board number");
         return;
     }
 
@@ -100,49 +95,36 @@ void MyricomSource::Open()
     rssp.mode = SNF_RSS_FLAGS;
     rssp.params.rss_flags = (snf_rss_mode_flags) (SNF_RSS_IP | SNF_RSS_SRC_PORT | SNF_RSS_DST_PORT);
 
-printf("opening port:  %d  - num rings: %lu - ring num: %d - ring size %lu\n", portnum, snf_num_rings, ring_num, snf_ring_size);
-
     if ( snf_open(portnum, snf_num_rings, &rssp, snf_ring_size, SNF_F_PSHARED, &snf_handle) != 0 ) {
-        Error(errno ? strerror(errno) : "SNF: failed in snf_open");
+        Error(errno ? strerror(errno) : "Myricom: failed in snf_open");
         return;
     }
 
-    if ( snf_get_link_state(snf_handle, &snf_link_isup) != 0 ) {
-        Error(errno ? strerror(errno) : "SNF: failed in snf_get_link_state");
-        return;
-    }
-
-    if (snf_link_isup != SNF_LINK_UP) {
-        Error(errno ? strerror(errno) : "SNF: interface is down");
-        return;
-    }
-
+    snf_timesource_state snf_timesource_active;
     if ( snf_get_timesource_state(snf_handle, &snf_timesource_active) != 0 ) {
-        Error(errno ? strerror(errno) : "SNF: failed in snf_get_timesource_state");
+        Error(errno ? strerror(errno) : "Myricom: failed in snf_get_timesource_state");
         return;
     }
 
     switch(snf_timesource_active) {
         case SNF_TIMESOURCE_LOCAL:
-            printf("SNF: %s\n", ts_local.data());
+            Info("Myricom: Local timesource (no external)");
             break;
         case SNF_TIMESOURCE_EXT_UNSYNCED:
-            printf("SNF: %s\n", ts_ext_unsynced.data());
+            Info("Myricom: External Timesource: not synchronized (yet)");
             break;
         case SNF_TIMESOURCE_EXT_SYNCED:
-            printf("SNF: %s\n", ts_ext_synced.data());
+            Info("Myricom: External Timesource: synchronized");
             break;
         case SNF_TIMESOURCE_EXT_FAILED:
-            printf("SNF: %s\n", ts_ext_failed.data());
+            Info("Myricom: External Timesource: NIC failure to connect to source");
             break;
         case SNF_TIMESOURCE_ARISTA_ACTIVE:
-            printf("SNF: %s\n", ts_arista_active.data());
+            Info("Myricom: Arista switch is sending ptp timestamps");
             break;
         default:
-            printf("SNF: I have no idea what the timesource is\n");
+            Info("Myricom: I have no idea what the timesource is");
     }
-    fflush(stdout);
-
 
     if ( snf_ring_open_id(snf_handle, ring_num, &snf_ring) ) {
         Error(errno ? strerror(errno) : "failed in snf_ring_open_id");
@@ -187,16 +169,16 @@ bool MyricomSource::ExtractNextPacket(Packet* pkt)
         return false;
 
     while ( true ) {
-        if ( snf_ring_recv(snf_ring, 1, &recv_req) != 0 )
+        int ret = snf_ring_recv(snf_ring, 0, &recv_req);
+	if ( ret != 0 )
             // No packets right now.
             return false;
 
-        if ( recv_req.timestamp == 0.0 )
-            {
+        if ( recv_req.timestamp == 0.0 ) {
             // TODO: If a packet source returns zero, Bro starts ignoring the packet source.
             Error("Myricom packet source returned a zero timestamp!");
             return false;
-            }
+        }
 
         current_hdr.ts = snf_timestamp_to_timeval(recv_req.timestamp);
         current_hdr.caplen = recv_req.length;
