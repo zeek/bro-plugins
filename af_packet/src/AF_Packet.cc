@@ -137,7 +137,7 @@ inline bool AF_PacketSource::ConfigureFanoutGroup(bool enabled)
 		int ret;
 
 		fanout_id = BifConst::AF_Packet::fanout_id;
-		fanout_arg = (fanout_id | (PACKET_FANOUT_HASH << 16));
+		fanout_arg = (fanout_id | (GetFanoutMode() << 16));
 
 		ret = setsockopt(socket_fd, SOL_PACKET, PACKET_FANOUT,
 			&fanout_arg, sizeof(fanout_arg));
@@ -174,6 +174,15 @@ inline bool AF_PacketSource::ConfigureHWTimestamping(bool enabled)
 			return false;
 		}
 	return true;
+	}
+
+inline uint32_t AF_PacketSource::GetFanoutMode()
+	{
+	switch ( BifConst::AF_Packet::fanout_mode->AsEnum() ) {
+		case BifEnum::AF_Packet::FANOUT_CPU: return PACKET_FANOUT_CPU;
+		case BifEnum::AF_Packet::FANOUT_QM: return PACKET_FANOUT_QM;
+		default: return PACKET_FANOUT_HASH;
+	}
 	}
 
 void AF_PacketSource::Close()
