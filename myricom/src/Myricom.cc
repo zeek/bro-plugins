@@ -198,7 +198,6 @@ bool MyricomSource::ExtractNextPacket(Packet* pkt)
             // No packets right now.
             return false;
 
-        ++num_received;
         if ( recv_req.timestamp == 0.0 ) {
             // TODO: If a packet source returns zero, Bro starts ignoring the packet source.
             Error("Myricom packet source returned a zero timestamp!");
