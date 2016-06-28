@@ -3,3 +3,4 @@ module Myricom;
 const snf_ring_size: count;
 const snf_num_rings: count;
 const snf_app_id: count;
+const snf_aggregate: bool;

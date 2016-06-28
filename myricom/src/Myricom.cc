@@ -53,6 +53,7 @@ void MyricomSource::Open()
     uint64_t snf_num_rings = BifConst::Myricom::snf_num_rings;
     uint64_t snf_ring_size = BifConst::Myricom::snf_ring_size;
     uint64_t snf_app_id = BifConst::Myricom::snf_app_id;
+    bool snf_aggregate = BifConst::Myricom::snf_aggregate;
     snf_link_state snf_link_isup;
     struct snf_ifaddrs *ifaddrs = NULL, *ifa;
     uint32_t portnum = -1;
@@ -72,43 +73,66 @@ void MyricomSource::Open()
         return;
     }
 
-    if ( snf_getifaddrs(&ifaddrs) ) {
-        Error(errno ? strerror(errno) : "Myricom: failed in snf_getifaddrs");
-        return;
-    }
-    ifa = ifaddrs;
-    while (ifa != NULL) {
-        if (!strncmp(iface.data(), ifa->snf_ifa_name, iface.length())) {
-            portnum = ifa->snf_ifa_boardnum;
-            break;
-        }
-        ifa = ifa->snf_ifa_next;
-    }
-    snf_freeifaddrs(ifaddrs);
+    bool all_ifaces = (iface == "*");
+    char *endp;
+    uint res = strtoul(iface.c_str(), &endp, 0);
+    // Check if strtoul returned an error, that means the interface 
+    // is probably an interface and not a number.
+    if ( res == 0 && *endp != '\0' ) {
+        if ( all_ifaces ) {
+            int num_ifaces = 0;
+            if ( snf_getportmask_valid(&portnum, &num_ifaces) != 0 ) {
+                Error("Myricom: failed getting all interfaces for global aggregating");
+                return;
+            }
+            Info("Myricom: Sniffing all interfaces");
 
-    if ( ifa == NULL ) {
-        Error(errno ? strerror(errno) : "Myricom: failed to map the interface to the board number");
-        return;
+        } else {
+            if ( snf_getifaddrs(&ifaddrs) ) {
+                Error(errno ? strerror(errno) : "Myricom: failed in snf_getifaddrs");
+                return;
+            }
+            ifa = ifaddrs;
+            while (ifa != NULL) {
+                if (!strncmp(iface.data(), ifa->snf_ifa_name, iface.length())) {
+                    portnum = ifa->snf_ifa_boardnum;
+                    break;
+                }
+                ifa = ifa->snf_ifa_next;
+            }
+            snf_freeifaddrs(ifaddrs);
+
+            if ( ifa == NULL ) {
+                Error(errno ? strerror(errno) : "Myricom: failed to map the interface to the board number");
+                return;
+            }
+        }
+    } else {
+        portnum = res;
     }
 
     struct snf_rss_params rssp;
     rssp.mode = SNF_RSS_FLAGS;
     rssp.params.rss_flags = (snf_rss_mode_flags) (SNF_RSS_IP | SNF_RSS_SRC_PORT | SNF_RSS_DST_PORT);
 
-    if ( snf_open(portnum, snf_num_rings, &rssp, snf_ring_size, SNF_F_PSHARED, &snf_handle) != 0 ) {
+    int flags = SNF_F_PSHARED;
+    if ( snf_aggregate || all_ifaces ) {
+        flags |= SNF_F_AGGREGATE_PORTMASK;
+    }
+
+    if ( snf_open(portnum, snf_num_rings, &rssp, snf_ring_size, flags, &snf_handle) != 0 ) {
         Error(errno ? strerror(errno) : "Myricom: failed in snf_open");
         return;
     }
 
     snf_timesource_state snf_timesource_active;
     if ( snf_get_timesource_state(snf_handle, &snf_timesource_active) != 0 ) {
-        Error(errno ? strerror(errno) : "Myricom: failed in snf_get_timesource_state");
-        return;
+        // We don't care about this failing.
     }
 
     switch(snf_timesource_active) {
         case SNF_TIMESOURCE_LOCAL:
-            Info("Myricom: Local timesource (no external)");
+            Info("Myricom: Local timesource");
             break;
         case SNF_TIMESOURCE_EXT_UNSYNCED:
             Info("Myricom: External Timesource: not synchronized (yet)");
@@ -123,7 +147,7 @@ void MyricomSource::Open()
             Info("Myricom: Arista switch is sending ptp timestamps");
             break;
         default:
-            Info("Myricom: I have no idea what the timesource is");
+            Info("Myricom: Unable to query for timesource");
     }
 
     if ( snf_ring_open_id(snf_handle, ring_num, &snf_ring) ) {
@@ -174,6 +198,7 @@ bool MyricomSource::ExtractNextPacket(Packet* pkt)
             // No packets right now.
             return false;
 
+        ++num_received;
         if ( recv_req.timestamp == 0.0 ) {
             // TODO: If a packet source returns zero, Bro starts ignoring the packet source.
             Error("Myricom packet source returned a zero timestamp!");
