@@ -54,6 +54,7 @@ void MyricomSource::Open()
     uint64_t snf_ring_size = BifConst::Myricom::snf_ring_size;
     uint64_t snf_app_id = BifConst::Myricom::snf_app_id;
     bool snf_aggregate = BifConst::Myricom::snf_aggregate;
+    TableVal *snf_rss_mode = BifConst::Myricom::snf_rss_mode->AsTableVal();
     snf_link_state snf_link_isup;
     struct snf_ifaddrs *ifaddrs = NULL, *ifa;
     uint32_t portnum = -1;
@@ -113,7 +114,17 @@ void MyricomSource::Open()
 
     struct snf_rss_params rssp;
     rssp.mode = SNF_RSS_FLAGS;
-    rssp.params.rss_flags = (snf_rss_mode_flags) (SNF_RSS_IP | SNF_RSS_SRC_PORT | SNF_RSS_DST_PORT);
+
+    ListVal* lv = snf_rss_mode->ConvertToPureList();
+    if ( snf_num_rings > 1 && lv->Length() == 0 ) {
+        Error("Myricom: No parameters chosen for RSS hashing but load balancing was requested by defining Myricom::snf_num_rings > 1");
+        return;
+    }
+    uint uint_rss_flags = 0;
+    for ( int i = 0; i < lv->Length(); i++ ) {
+        uint_rss_flags |= lv->Index(i)->AsCount();
+    }
+    rssp.params.rss_flags = static_cast<snf_rss_mode_flags>(uint_rss_flags);
 
     int flags = SNF_F_PSHARED;
     if ( snf_aggregate || all_ifaces ) {
