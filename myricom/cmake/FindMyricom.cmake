@@ -15,6 +15,7 @@
 
 find_path(MYRICOM_ROOT_DIR
     NAMES include/snf.h
+    HINTS /opt/snf /usr/local/snf
 )
 
 find_path(MYRICOM_INCLUDE_DIR
