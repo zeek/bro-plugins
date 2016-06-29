@@ -1,7 +1,6 @@
 
 import BroControl.plugin
 from BroControl import config
-from pprint import pprint
 
 class Myricom(BroControl.plugin.Plugin):
     def __init__(self):
@@ -47,7 +46,5 @@ class Myricom(BroControl.plugin.Plugin):
                         script += "\n  redef Myricom::snf_ring_size = %s;" % wn.myricom_snf_ring_size
                     script += "\n@endif"
 
-        pprint(wn.describe())
-        print script
         return script
 
