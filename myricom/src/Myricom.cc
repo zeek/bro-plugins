@@ -64,11 +64,6 @@ void MyricomSource::Open()
         return;
     }
 
-    if ( snf_getifaddrs(&ifaddrs) != 0 ) {
-        Error(errno ? strerror(errno) : "Myricom: failed in snf_getifaddrs");
-        return;
-    }
-
     if ( snf_set_app_id(snf_app_id & 0xFFFFFFFF) ) {
         Error(errno ? strerror(errno) : "Myricom: failed in snf_set_app_id");
         return;
@@ -210,8 +205,9 @@ bool MyricomSource::ExtractNextPacket(Packet* pkt)
             return false;
 
         if ( recv_req.timestamp == 0.0 ) {
-            // TODO: If a packet source returns zero, Bro starts ignoring the packet source.
-            Error("Myricom packet source returned a zero timestamp!");
+            // TODO: If a packet source returns a packet with a zero timestamp, 
+            //       Bro starts ignoring the packet source.
+            Info("Myricom packet source returned a zero timestamp!");
             return false;
         }
 

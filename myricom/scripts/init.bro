@@ -4,7 +4,7 @@ module Myricom;
 
 export {
 	## Number of rings.
-	const snf_num_rings = 16 &redef;
+	const snf_num_rings = 1 &redef;
 
 	## Size of the ring-buffer in MB.
 	const snf_ring_size = 1024 &redef;
