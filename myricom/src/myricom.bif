@@ -12,8 +12,6 @@ enum RssField %{
         SNF_RSS_DST_PORT  =  0x20, #<< Include TCP/UDP/SCTP DST port in hash 
         SNF_RSS_GTP       =  0x40, #<< Include GTP TEID in hash
         SNF_RSS_GRE       =  0x80, #<< Include GRE contents in hash
-
-
 %}
 
 
