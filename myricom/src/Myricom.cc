@@ -117,7 +117,7 @@ void MyricomSource::Open()
     }
     uint uint_rss_flags = 0;
     for ( int i = 0; i < lv->Length(); i++ ) {
-        uint_rss_flags |= lv->Index(i)->AsCount();
+        uint_rss_flags |= lv->Index(i)->AsEnum();
     }
     rssp.params.rss_flags = static_cast<snf_rss_mode_flags>(uint_rss_flags);
 
