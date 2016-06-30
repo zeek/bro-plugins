@@ -11,7 +11,7 @@ plugin::Configuration Plugin::Configure()
 
     plugin::Configuration config;
     config.name = "Bro::Myricom";
-    config.description = "Packet acquisition via Myricom SNF v3";
+    config.description = "Packet acquisition via Myricom SNF v3+v4";
     config.version.major = 1;
     config.version.minor = 0;
 

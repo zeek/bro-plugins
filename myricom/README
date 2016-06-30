@@ -2,19 +2,19 @@
 Bro::Myricom
 ============
 
-This plugin provides native `Myricom SNF v3` support
-for Bro.
+This plugin provides native `Myricom SNF v3+v4` support for Bro.
 
 Installation
 ------------
 
-Follow Myricom's instructions to get its kernel module and userspace libraries installed. Then::
+Follow Myricom's instructions to get its kernel module and userspace libraries installed,
+then use the following commands to configure and build the plugin. In most cases, if you
+are building this plugin from the Bro source tree, you won't need any configure arguments::
 
         ./configure --with-myricom=<path to sniffer sources> --bro-dist=<path to bro sources>
-        make && make install
+        make && sudo make install
 
-If everything built and installed correctly, you should see
-this::
+If everything built and installed correctly, you should see this::
 
     # bro -N Bro::Myricom
     Bro::Myricom - Packet acquisition via Myricom SNF v3 (dynamic, version 1.0)
@@ -33,14 +33,37 @@ monitor interface ``p2p1``::
 To use it in production with multiple Bro processes, use a
 configuration similar to this in node.cfg::
 
-    [hostname-p2p1]
+    [worker-1]
     type=worker
     host=localhost
-    lb_method=myricom
+    lb_method=custom
     lb_procs=<number of processes, like 16>
     interface=myricom::<interface name, like p2p1>
-    pin_cpus=0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
-    # Adjust SNF_DESCRING_SIZE and SNF_DATARING_SIZE to your taste. Make sure the descriptor is 1/4 of the dataring size.
-    env_vars=SNF_DEBUG_MASK=0x3,SNF_DESCRING_SIZE=4294967296,SNF_DATARING_SIZE=17179869184,SNF_NUM_RINGS=16
+
+If you would like to sniff all Myricom interfaces on a system and merge them 
+together, there is a special interface name available of ``myricom::*``. It uses 
+a special feature of the Myricom SNF library for port aggregation.
+
+To run a cluster sniffing all Myricom interfaces on a system, you can use the
+same configuration as above, but with the special interface name that aggregates 
+all Myricom ports like this::
+
+    [worker-1]
+    type=worker
+    host=localhost
+    lb_method=custom
+    lb_procs=<number of processes, like 16>
+    interface=myricom::*
+
+Tuning
+******
+
+You may wish to tune the amount of memory used for the global packet buffer. This
+setting is available in the Bro script interface to the plugin, but it's also 
+available as a global option in ``broctl.cfg`` or as a per-node option in 
+``node.cfg``.  The following like in either config file will set the SNF packet
+buffer ring size to 16GB::
+
+     myricom.snf_ring_size=16384
 
 Enjoy!
