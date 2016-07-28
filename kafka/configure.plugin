@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+# Hooks to add custom options to the configure script.
+#
+
+plugin_usage()
+{
+  cat <<EOF
+  --with-librdkafka=PATH	 path to librdkafka
+  --with-openssl=PATH      path to OpenSSL install root
+EOF
+}
+
+plugin_option()
+{
+  case "$1" in
+    --with-librdkafka=*)
+      append_cache_entry LibRdKafka_ROOT_DIR PATH $optarg
+      ;;
+    --with-openssl=*)
+      append_cache_entry OpenSSL_ROOT_DIR PATH $optarg
+      ;;
+    *)
+      return 1;
+    ;;
+    esac
+}

@@ -1,0 +1,3 @@
+module Kafka;
+
+type config : table[string] of string;

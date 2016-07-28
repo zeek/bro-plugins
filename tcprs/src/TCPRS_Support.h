@@ -224,9 +224,9 @@ typedef struct tcp_options {
 typedef struct _SegmentInfo {
 	uint32 len;
 	uint16 segmentID;
-	u_char ttl;
-	u_char padding1;
-	u_char *tp; /* maximum size of a tcp header is 60 bytes */
+	uint8_t ttl;
+	uint8_t padding1;
+	uint8_t *tp; /* maximum size of a tcp header is 60 bytes */
 	double current_time; /* current time w.r.t. the packet */
 	double time_to_process;
 } SegmentInfo;

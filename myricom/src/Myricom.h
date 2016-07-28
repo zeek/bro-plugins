@@ -50,12 +50,16 @@ private:
     std::string kind;
 
     int current_filter;
+    unsigned int num_received;
     unsigned int num_discarded;
 
     snf_handle_t snf_handle; /* opaque device handle */
     snf_ring_t   snf_ring;   /* opaque device ring handle */
     int          snf_timeout;
     int          snf_boardnum;
+
+    std::string  iface;
+    int          ring_num;
 
     struct pcap_pkthdr current_hdr;
 };

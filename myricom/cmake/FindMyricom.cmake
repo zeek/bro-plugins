@@ -3,18 +3,19 @@
 # Variables used by this module, they can change the default behaviour and need
 # to be set before calling find_package:
 #
-#  Myricom_ROOT_DIR          Set this variable to the root installation of
+#  MYRICOM_ROOT_DIR          Set this variable to the root installation of
 #                            libsnf if the module has problems finding the
 #                            proper installation path.
 #
 # Variables defined by this module:
 #
-#  Myricom_FOUND               System has SNF API files.
-#  Myricom_INCLUDE_DIR         The myricom snf include directory.
-#  Myricom_LIBRARY             The libsnf library
+#  MYRICOM_FOUND               System has SNF API files.
+#  MYRICOM_INCLUDE_DIR         The myricom snf include directory.
+#  MYRICOM_LIBRARY             The libsnf library
 
 find_path(MYRICOM_ROOT_DIR
     NAMES include/snf.h
+    HINTS /opt/snf /usr/local/opt/snf /usr/local/snf
 )
 
 find_path(MYRICOM_INCLUDE_DIR
