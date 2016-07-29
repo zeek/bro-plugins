@@ -1,6 +1,8 @@
+# @TEST-SERIALIZE: postgres
 # @TEST-EXEC: initdb postgres
 # @TEST-EXEC: perl -pi.bak -E "s/#port =.*/port = 7772/;" postgres/postgresql.conf
 # @TEST-EXEC: pg_ctl start -D postgres -l serverlog
+# @TEST-EXEC: sleep 5
 # @TEST-EXEC: createdb -p 7772 testdb
 # @TEST-EXEC: bro %INPUT || true
 # @TEST-EXEC: echo "select * from ssh" | psql -A -p 7772 testdb >ssh.out 2>&1 || true

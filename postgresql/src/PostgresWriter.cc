@@ -10,6 +10,7 @@
 #include "threading/SerialTypes.h"
 
 #include "PostgresWriter.h"
+#include "postgresql.bif.h"
 
 using namespace logging;
 using namespace writer;
@@ -19,6 +20,18 @@ using threading::Field;
 PostgreSQL::PostgreSQL(WriterFrontend* frontend) : WriterBackend(frontend)
 	{
 	io = unique_ptr<threading::formatter::Ascii>(new threading::formatter::Ascii(this, threading::formatter::Ascii::SeparatorInfo()));
+
+	default_hostname.assign(
+		(const char*) BifConst::LogPostgres::default_hostname->Bytes(),
+		BifConst::LogPostgres::default_hostname->Len()
+		);
+
+	default_dbname.assign(
+		(const char*) BifConst::LogPostgres::default_dbname->Bytes(),
+		BifConst::LogPostgres::default_dbname->Len()
+		);
+
+	default_port = BifConst::LogPostgres::default_port;
 	}
 
 PostgreSQL::~PostgreSQL()
@@ -88,7 +101,7 @@ void PostgreSQL::CreateInsert(int num_fields, const Field* const * fields)
 	for ( int i = 0; i < num_fields; ++i )
 		{
 		string fieldname = fields[i]->name;
-		replace( fieldname.begin(), fieldname.end(), '.', '_' ); // postgres does not like "." in row names.
+		replace( fieldname.begin(), fieldname.end(), '.', '$' ); // postgres does not like "." in row names.
 
 		if ( i != 0 )
 			{
@@ -122,15 +135,23 @@ bool PostgreSQL::DoInit(const WriterInfo& info, int num_fields,
 		string hostname = LookupParam(info, "hostname");
 		if ( hostname.empty() )
 			{
-			MsgThread::Info(Fmt("hostname configuration option not found. Defaulting to localhost"));
-			hostname = "localhost";
+			MsgThread::Info(Fmt("hostname configuration option not found. Defaulting to %s", default_hostname.c_str()));
+			hostname = default_hostname;
 			}
 
 		string dbname = LookupParam(info, "dbname");
 		if ( dbname.empty() )
 			{
-			MsgThread::Error(Fmt("dbname configuration option not found."));
-			return false;
+			if ( default_dbname == "" )
+				{
+				MsgThread::Error(Fmt("dbname configuration option not found."));
+				return false;
+				}
+			else
+				{
+				MsgThread::Error(Fmt("dbname configuration option not found. Defaulting to %s", default_dbname.c_str()));
+				dbname = default_dbname;
+				}
 			}
 
 		conninfo = string("host = ") + hostname + " dbname = " + dbname;
@@ -138,6 +159,8 @@ bool PostgreSQL::DoInit(const WriterInfo& info, int num_fields,
 		string port = LookupParam(info, "port");
 		if ( ! port.empty() )
 			conninfo += " port = " + port;
+		else if ( default_port >= 0 )
+			conninfo += Fmt(" port = %d", default_port);
 		}
 
 	conn = PQconnectdb(conninfo.c_str());
@@ -158,7 +181,7 @@ bool PostgreSQL::DoInit(const WriterInfo& info, int num_fields,
 		create += ",\n";
 
 		string name = field->name;
-		replace( name.begin(), name.end(), '.', '_' ); // postgres does not like "." in row names.
+		replace( name.begin(), name.end(), '.', '$' ); // postgres does not like "." in row names.
 		create += name;
 
 		string type = GetTableType(field->type, field->subtype);

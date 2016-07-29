@@ -44,6 +44,10 @@ private:
 	string table;
 	string insert;
 
+	string default_hostname;
+	string default_dbname;
+	int default_port;
+
 	std::unique_ptr<threading::formatter::Ascii> io;
 };
 

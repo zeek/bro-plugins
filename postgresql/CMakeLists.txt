@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 2.8)
 project(Plugin)
 
 include(BroPlugin)
-include(RequireCXX11)
 
 find_package(Postgres)
 

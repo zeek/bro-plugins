@@ -220,10 +220,13 @@ bool PostgreSQL::DoUpdate()
 	mapping.reserve(num_fields);
 
 	for ( int i = 0; i < num_fields; ++i ) {
-		int pos = PQfnumber(res, fields[i]->name);
+		string fieldname = fields[i]->name;
+		replace( fieldname.begin(), fieldname.end(), '.', '$' ); // for the moment, expect the same fieldname replacement as we do in the writer.
+
+		int pos = PQfnumber(res, fieldname.c_str());
 		if ( pos == -1 )
 			{
-			Error(Fmt("Field %s was not found in PostgreSQL result", fields[i]->name));
+			Error(Fmt("Field %s was not found in PostgreSQL result", fieldname.c_str()));
 			PQclear(res);
 			return false;
 			}
