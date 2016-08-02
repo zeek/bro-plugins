@@ -1,4 +1,8 @@
 
+0.2-109 | 2016-08-02 10:57:21 -0700
+
+  * Fixes compilation against librdkafka 0.9.x. (Derek Ditch)
+
 0.2-84 | 2016-05-12 07:10:27 -0700
 
   * Fix to get kafka plugin to be visible in the docs. (Daniel Thayer)

@@ -1,12 +1,10 @@
-// System includes
+
 #include <librdkafka/rdkafkacpp.h>
 
-// Bro includes
 #include <Type.h>
 #include <threading/Formatter.h>
 #include <threading/formatters/JSON.h>
 
-// Plugin includes
 #include "KafkaWriter.h"
 #include "kafka.bif.h"
 

@@ -1,14 +1,11 @@
 #ifndef BRO_PLUGIN_BRO_KAFKA_KAFKAWRITER_H
 #define BRO_PLUGIN_BRO_KAFKA_KAFKAWRITER_H
 
-// System includes
 #include <map>
 #include <string>
 
-// Bro includes
 #include <logging/WriterBackend.h>
 
-// Forward declarations
 namespace RdKafka {
     class Conf;
     class Producer;
