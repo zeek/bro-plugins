@@ -1,4 +1,8 @@
 
+0.2-116 | 2016-08-05 15:33:28 -0700
+
+  * Add PostgreSQL reader and writer. (Johanna Amann)
+
 0.2-109 | 2016-08-02 10:57:21 -0700
 
   * Fixes compilation against librdkafka 0.9.x. (Derek Ditch)
