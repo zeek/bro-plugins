@@ -6,12 +6,9 @@ Logging to, and input from, PostgreSQL Databases
 Introduction and Warning
 ------------------------
 
-This plugin offers the possibility to log to PostgreSQL databases as well as
-to read information from PostgreSQL databases. Note that the current state of
-the plugin is experimental; there are known speed issues as well as memory
-leaks. This plugin should not be used in any production environment in its
-current state.
-
+This plugin offers the possibility to log to PostgreSQL databases as
+well as to read information from PostgreSQL databases. Note that the
+current state of the plugin is still experimental.
 
 Installation
 ------------
