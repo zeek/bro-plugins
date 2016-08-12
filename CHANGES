@@ -1,4 +1,10 @@
 
+0.3 | 2016-08-12 13:17:33 -0700
+
+  * Release 0.3.
+
+  * Updating postgresql README. (Robin Sommer)
+
 0.2-116 | 2016-08-05 15:33:28 -0700
 
   * Add PostgreSQL reader and writer. (Johanna Amann)
