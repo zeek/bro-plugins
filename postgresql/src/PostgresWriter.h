@@ -5,6 +5,8 @@
 #ifndef LOGGING_WRITER_POSTGRES_H
 #define LOGGING_WRITER_POSTGRES_H
 
+#include <thread>
+
 #include "logging/WriterBackend.h"
 #include "threading/formatters/Ascii.h"
 #include "libpq-fe.h"

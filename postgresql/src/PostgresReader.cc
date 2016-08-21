@@ -1,5 +1,6 @@
 // See the file "COPYING" in the main distribution directory for copyright.
 
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <sys/types.h>
@@ -221,7 +222,7 @@ bool PostgreSQL::DoUpdate()
 
 	for ( int i = 0; i < num_fields; ++i ) {
 		string fieldname = fields[i]->name;
-		replace( fieldname.begin(), fieldname.end(), '.', '$' ); // for the moment, expect the same fieldname replacement as we do in the writer.
+		std::replace( fieldname.begin(), fieldname.end(), '.', '$' ); // for the moment, expect the same fieldname replacement as we do in the writer.
 
 		int pos = PQfnumber(res, fieldname.c_str());
 		if ( pos == -1 )
@@ -283,8 +284,7 @@ bool PostgreSQL::DoUpdate()
 	}
 
 // currently we do not support streaming
-bool PostgreSQL::DoHeartbeat(double network_time, double current_time) 
+bool PostgreSQL::DoHeartbeat(double network_time, double current_time)
 	{
 	return true;
 	}
-
