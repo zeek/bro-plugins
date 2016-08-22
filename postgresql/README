@@ -78,3 +78,4 @@ To read back this data, use a script like this:
     	terminate();
     	}
 
+You will also have to make changes to the way authentication is handled by PostgreSQL, Since the bro plugin attempts to connect to Postgres via the same user that runs Bro.

@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <vector>
+#include <thread>
 
 #include "input/ReaderFrontend.h"
 #include "threading/formatters/Ascii.h"
