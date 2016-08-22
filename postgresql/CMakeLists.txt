@@ -5,10 +5,12 @@ project(Plugin)
 
 include(BroPlugin)
 
-find_package(Postgres)
+find_package(PostgreSQL)
 
-if (POSTGRES_FOUND)
-    include_directories(BEFORE ${Postgres_INCLUDE_DIRS})
+if (PostgreSQL_FOUND)
+    include_directories(BEFORE ${PostgreSQL_INCLUDE_DIRS})
+    link_directories(${PostgreSQL_LIBRARY_DIRS})
+
 
     bro_plugin_begin(Bro PostgreSQL)
     bro_plugin_cc(src/PostgresWriter.cc)
@@ -16,9 +18,9 @@ if (POSTGRES_FOUND)
     bro_plugin_cc(src/Plugin.cc)
     bro_plugin_bif(src/postgresql.bif)
     bro_plugin_dist_files(README COPYING VERSION)
-    bro_plugin_link_library(${Postgres_LIBRARY})
+    bro_plugin_link_library(${PostgreSQL_LIBRARIES})
     bro_plugin_end()
-    message(STATUS "PostgreSQL includes : ${Postgres_INCLUDE_DIRS}")
+    message(STATUS "PostgreSQL includes : ${PostgreSQL_INCLUDE_DIRS}")
 else()
     message(FATAL_ERROR "PostgreSQL not found.")
 endif()
