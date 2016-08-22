@@ -1,5 +1,6 @@
 // See the file "COPYING" in the main distribution directory for copyright.
 
+#include <algorithm>
 #include <string>
 #include <errno.h>
 #include <vector>
@@ -101,7 +102,7 @@ void PostgreSQL::CreateInsert(int num_fields, const Field* const * fields)
 	for ( int i = 0; i < num_fields; ++i )
 		{
 		string fieldname = fields[i]->name;
-		replace( fieldname.begin(), fieldname.end(), '.', '$' ); // postgres does not like "." in row names.
+		std::replace( fieldname.begin(), fieldname.end(), '.', '$' ); // postgres does not like "." in row names.
 
 		if ( i != 0 )
 			{
@@ -181,7 +182,7 @@ bool PostgreSQL::DoInit(const WriterInfo& info, int num_fields,
 		create += ",\n";
 
 		string name = field->name;
-		replace( name.begin(), name.end(), '.', '$' ); // postgres does not like "." in row names.
+		std::replace( name.begin(), name.end(), '.', '$' ); // postgres does not like "." in row names.
 		create += name;
 
 		string type = GetTableType(field->type, field->subtype);

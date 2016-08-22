@@ -78,3 +78,5 @@ To read back this data, use a script like this:
     	terminate();
     	}
 
+Please note that the plugin connects to PostgreSQL as the user running Bro,
+without supplying any additional username or password.

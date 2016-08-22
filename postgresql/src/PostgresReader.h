@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <vector>
+#include <memory> // for unique_ptr
 
 #include "input/ReaderFrontend.h"
 #include "threading/formatters/Ascii.h"

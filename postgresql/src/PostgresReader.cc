@@ -1,5 +1,6 @@
 // See the file "COPYING" in the main distribution directory for copyright.
 
+#include <algorithm> // for replace
 #include <fstream>
 #include <sstream>
 #include <sys/types.h>
@@ -178,7 +179,7 @@ std::unique_ptr<Value> PostgreSQL::EntryToVal(string s, const threading::Field* 
 
 		// this should not leak in case of error -- instead, Value::~Value will clean it up.
 		Value** lvals = new Value* [vals.size()];
-		for ( int i = 0; i<vals.size(); ++i )
+		for ( decltype(vals.size()) i = 0; i<vals.size(); ++i )
 			lvals[i] = vals[i].release();
 
 		if ( field->type == TYPE_TABLE )
@@ -221,7 +222,7 @@ bool PostgreSQL::DoUpdate()
 
 	for ( int i = 0; i < num_fields; ++i ) {
 		string fieldname = fields[i]->name;
-		replace( fieldname.begin(), fieldname.end(), '.', '$' ); // for the moment, expect the same fieldname replacement as we do in the writer.
+		std::replace( fieldname.begin(), fieldname.end(), '.', '$' ); // for the moment, expect the same fieldname replacement as we do in the writer.
 
 		int pos = PQfnumber(res, fieldname.c_str());
 		if ( pos == -1 )
@@ -283,8 +284,7 @@ bool PostgreSQL::DoUpdate()
 	}
 
 // currently we do not support streaming
-bool PostgreSQL::DoHeartbeat(double network_time, double current_time) 
+bool PostgreSQL::DoHeartbeat(double network_time, double current_time)
 	{
 	return true;
 	}
-
