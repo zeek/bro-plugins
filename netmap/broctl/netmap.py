@@ -23,7 +23,7 @@ class Netmap(BroControl.plugin.Plugin):
             useplugin = True
 
             orig_if = nn.interface
-            if (orig_if,nn.host) not in interface_pipes:
+            if (nn.host,orig_if) not in interface_pipes:
                 i=0
                 if nn.netmap_first_pipe:
                     i = int(nn.netmap_first_pipe)
