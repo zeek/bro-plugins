@@ -16,7 +16,7 @@ class Myricom(BroControl.plugin.Plugin):
 
         interface_pipes={}
         for nn in self.nodes():
-            # Only do this if it's a worker, starts with netmap:: and has some lb_proc configured.
+            # Only do this if it's a worker, starts with myricom:: and has some lb_proc configured.
             if nn.type != "worker" or not nn.interface.startswith("myricom::") or nn.lb_procs == "":
                 continue
 
@@ -25,8 +25,8 @@ class Myricom(BroControl.plugin.Plugin):
             orig_if = nn.interface
             if (nn.host,orig_if) not in interface_pipes:
                 i=0
-                if nn.netmap_first_pipe:
-                    i = int(nn.netmap_first_pipe)
+                if nn.myricom_first_ring:
+                    i = int(nn.myricom_first_ring)
                 interface_pipes[nn.host,orig_if] = i
 
             nn.interface="{:s}}}{:d}".format(orig_if, interface_pipes[nn.host,orig_if])
@@ -35,7 +35,7 @@ class Myricom(BroControl.plugin.Plugin):
         return useplugin
 
     def nodeKeys(self):
-        return ["snf_ring_size"]
+        return ["snf_ring_size", "first_ring"]
 
     def options(self):
         return [("snf_ring_size", "int", 1024, "Size of host memory buffer")]
