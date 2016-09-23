@@ -11,7 +11,7 @@ Installation
 Make sure the kernel headers are installed and your kernel supports
 PACKET_FANOUT and TPACKET_V3. The following will then compile and
 install the af_packet plugin alongside Bro, assuming it can find the
-kernel headers in a standard location:
+kernel headers in a standard location::
 
     # ./configure && make && make install
 
@@ -28,21 +28,25 @@ this::
     [Constant] AF_Packet::enable_fanout
     [Constant] AF_Packet::fanout_id
 
-To use AF_Packet you need to run Bro as root.
-
 Usage
 -----
 
 Once installed, you can use AF_Packet interfaces/ports by prefixing them
 with ``af_packet::`` on the command line. For example, to use AF_Packet
-to monitor interface ``eth0``:
+to monitor interface ``eth0``::
 
-    bro -i af_packet::eth0
+    # bro -i af_packet::eth0
 
-The AF_Packet plugin does not enable promiscuous mode on interfaces,
-you'll have to do that yourself. For example, on Linux:
+To use AF_Packet, running Bro without root privileges, the Bro processes needs
+the CAP_NET_RAW capability. You can set it with the following command (on each
+sensor, after broctl install)::
 
-    ifconfig eth0 promisc
+    # setcap cap_net_raw+eip <path_to_bro>/bin/bro
+
+The AF_Packet plugin automatically enables promiscuous mode on the interfaces.
+As the plugin is using PACKET_ADD_MEMBERSHIP to enter the promiscuous mode
+without interfering others, the PROMISC flag is not touched. To verify that the
+interface entered promiscuous mode you can use ``dmesg``.
 
 To adapt the plugin to your needs, you can set a couple of parameters like
 buffer size. See scripts/init.bro for the default values.

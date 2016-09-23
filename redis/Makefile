@@ -25,4 +25,4 @@ distclean:
 	rm -rf $(cmake_build_dir)
 
 test:
-	make -C tests
+	if [ -f build/lib/Bro-* ]; then make -C tests; else echo "Plugin not built."; fi

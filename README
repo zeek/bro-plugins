@@ -11,21 +11,20 @@ some might be experimental, and they generally also see less testing
 due to often depending on non-standard dependencies. Use at your own
 risk.
 
-Currently, the following plugins are available:
-
 .. toctree::
    :maxdepth: 1
 
-   af_packet - A packet source providing native AF_Packet support on
-   Linux. <af_packet/README>
+   af_packet - A packet source providing native AF_Packet support on Linux. <af_packet/README>
 
-   dataseries - A log writer adding support for HP Labs' DataSeries binary format <dataseries/README>
+   elasticsearch-deprecated - A log writer adding support for the Apache Lucene-based ElasticSearch database <elasticsearch-deprecated/README>
 
-   elasticsearch - A log writer adding support for the Apache Lucene-based ElasticSearch database <elasticsearch/README>
+   kafka - A log writer that sends logging output to Kafka <kafka/README>
 
    myricom - A packet source providing native `Myricom SNF v3` support <myricom/README>
 
    netmap - A packet source providing native netmap support <netmap/README>
+
+   postgresql - An experimental PostgreSQL reader/writer <postgresql/README>
 
    pf_ring - A packet source providing native PF_RING support <pf_ring/README>
 

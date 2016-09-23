@@ -1,4 +1,79 @@
 
+0.3 | 2016-08-12 13:17:33 -0700
+
+  * Release 0.3.
+
+  * Updating postgresql README. (Robin Sommer)
+
+0.2-116 | 2016-08-05 15:33:28 -0700
+
+  * Add PostgreSQL reader and writer. (Johanna Amann)
+
+0.2-109 | 2016-08-02 10:57:21 -0700
+
+  * Fixes compilation against librdkafka 0.9.x. (Derek Ditch)
+
+0.2-84 | 2016-05-12 07:10:27 -0700
+
+  * Fix to get kafka plugin to be visible in the docs. (Daniel Thayer)
+
+  * BIT-1586 Fixed thread-safety issues with Kafka Writer. (Nick Allen)
+
+  * Fix a tiny logic error that shows up when shutting down the
+    Kafka Writer. (Seth Hall)
+
+  * BIT-1559 allow users to define different kafka topics for each
+    log-stream. (Nick Allen)
+
+0.2-75 | 2016-05-07 12:15:43 -0700
+
+  * BIT-1543: Updated README for Kafka writer to include compatible
+    librdkafka versions. (Nick Allen)
+
+0.2-72 | 2016-03-10 13:22:26 -0800
+
+  * af_packet: Updated README. (Jan Grashoefer)
+
+  * af_packet: Automatically enable promiscuous mode. Socket is now
+    set to promiscuous mode using PACKET_ADD_MEMBERSHIP. This will not
+    be reflected by the interface flags but will show up in the kernel
+    log. (Jan Grashoefer)
+
+  * af_packet: Fixed initialization of statistics. (Jan Grashoefer)
+
+0.2-66 | 2016-03-10 12:05:13 -0800
+
+  * Add plugin to write log output to Kafka. (Nick Allen)
+
+  * Fix failing ElasticSearch tests due to netcat. (Daniel Thayer)
+
+  * Fix compile error by replacing u_char with uint8_t. (Johanna
+    Amann)
+
+  * Fixed 'abs' ambiguity. (James Swaro)
+
+0.2-59 | 2016-02-08 12:32:23 -0800
+
+  * Capitalize Myricom_ROOT_DIR in configure.plugin. (Keith Butler)
+
+0.2-53 | 2016-01-25 15:56:45 -0800
+
+  * Add TCPRS plugin. (James Swaro)
+
+  * Removing the DataSeries log writer plugin.  (Robin Sommer)
+
+  * Adding guard to Makefiles' test targets to not fail when the plugin
+    hasn't been built. (Robin Sommer)
+
+  * Fix a duplicate Makefile target. (Daniel Thayer)
+
+  * README improvments (Johanna Amann/Daniel Thayer)
+
+  * Add README.rst -> README symlink. Addresses BIT-1413 (Johanna
+    Amann)
+
+  * Adapt tp Bro plugin API changes. (James Swaro)
+
 0.2-35 | 2015-10-26 13:36:52 -0700
 
   * New packet source plugin to provide native AF_PACKET support. (Jan

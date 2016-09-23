@@ -21,17 +21,11 @@ NetmapSource::NetmapSource(const std::string& path, bool is_live, const std::str
 	current_filter = -1;
 	props.path = path;
 	props.is_live = is_live;
-	last_data = 0;
 	}
 
 void NetmapSource::Open()
 	{
 	std::string iface = kind + ":" + props.path;
-
-	char* rid = getenv("NETMAP_RING_ID");
-
-	if ( rid && *rid )
-		iface += "-" + string(rid);
 
 	nd = nm_open(iface.c_str(), 0, 0, 0);
 
@@ -41,10 +35,10 @@ void NetmapSource::Open()
 		return;
 		}
 
-	props.netmask = 0xffffff00;
+	props.netmask = NETMASK_UNKNOWN;
 	props.selectable_fd = NETMAP_FD(nd);
 	props.is_live = true;
-	props.link_type = DLT_EN10MB; // XXX?
+	props.link_type = DLT_EN10MB;
 
 	num_discarded = 0;
 
@@ -79,30 +73,29 @@ bool NetmapSource::ExtractNextPacket(Packet* pkt)
 			// Source has gone dry.
 			return false;
 
+		if ( hdr.len == 0 || hdr.caplen == 0 )
+			{
+			Weird("empty_netmap_header", pkt);
+			continue;
+			}
+
 		current_hdr.ts = hdr.ts;
 		current_hdr.caplen = hdr.caplen;
 		current_hdr.len = hdr.len;
-
-		last_data = data;
-		pkt->Init(props.link_type, &current_hdr.ts, current_hdr.caplen, current_hdr.len, data);
-
-		if ( current_hdr.len == 0 || current_hdr.caplen == 0 )
+	
+		if ( ! ApplyBPFFilter(current_filter, &current_hdr, data) )
 			{
-			Weird("empty_netmap_header", pkt);
-			return false;
+			++num_discarded;
+			continue;
 			}
 
-		if ( ApplyBPFFilter(current_filter, &current_hdr, data) )
-			// We want this packet.
-			break;
-
-		++num_discarded;
+		pkt->Init(props.link_type, &current_hdr.ts, current_hdr.caplen, current_hdr.len, data);
+		++stats.received;
+		return true;
 		}
 
-	last_hdr = current_hdr;
-	last_data = data;
-	++stats.received;
-	return true;
+	// Shouldn't be able to reach this point...
+	return false;
 	}
 
 void NetmapSource::DoneWithPacket()

@@ -1,0 +1,7 @@
+Bro::PostgreSQL - PostgreSQL log writer and input reader (dynamic, version 0.1)
+    [Writer] PostgreSQL (Log::WRITER_POSTGRESQL)
+    [Reader] PostgreSQL (Input::READER_POSTGRESQL)
+    [Constant] LogPostgres::default_hostname
+    [Constant] LogPostgres::default_dbname
+    [Constant] LogPostgres::default_port
+
