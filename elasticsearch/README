@@ -18,10 +18,9 @@ Warning
 -------
 
 This writer plugin only supports ElasticSearch 1; it will not work with
-ElasticSearch version 2 and above. This writer plugin is deprecated and
-will be removed from the Bro distribution in the future. This plugin is
-experimental and not recommended for production use; it is for example
-missing error handling and may loose messages.
+ElasticSearch version 2 and above. This writer plugin is orphaned and is not
+being maintained. This is experimental and is not recommended for production
+use; it is for example missing error handling and may loose messages.
 
 Installing ElasticSearch
 ------------------------

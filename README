@@ -16,7 +16,7 @@ risk.
 
    af_packet - A packet source providing native AF_Packet support on Linux. <af_packet/README>
 
-   elasticsearch-deprecated - A log writer adding support for the Apache Lucene-based ElasticSearch database <elasticsearch-deprecated/README>
+   elasticsearch - A log writer adding support for the Apache Lucene-based ElasticSearch database <elasticsearch/README>
 
    kafka - A log writer that sends logging output to Kafka <kafka/README>
 
