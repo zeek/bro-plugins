@@ -4,7 +4,7 @@
 //
 
 
-#include "config.h"
+#include "bro-config.h"
 
 #include "util.h" // Needs to come first for stdint.h
 
@@ -63,7 +63,7 @@ ElasticSearch::ElasticSearch(WriterFrontend* frontend) : WriterBackend(frontend)
 
 	curl_handle = HTTPSetup();
 
-	json = new threading::formatter::JSON(this, threading::formatter::JSON::TS_ISO8601);
+	json = new threading::formatter::JSON(this, threading::formatter::JSON::TS_MILLIS);
 	json->SurroundingBraces(false);
 }
 
@@ -143,6 +143,9 @@ bool ElasticSearch::DoWrite(int num_fields, const Field* const * fields,
 		buffer.AddRaw("\n", 1);
 
 	buffer.AddRaw("{", 1);
+	buffer.AddRaw("\"_timestamp\":", 13);
+	buffer.Add((uint64) (network_time * 1000));
+	buffer.AddRaw(",", 1);
 	json->Describe(&buffer, num_fields, fields, vals);
 
 	buffer.AddRaw("}\n", 2);
