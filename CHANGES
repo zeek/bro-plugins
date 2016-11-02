@@ -1,4 +1,32 @@
 
+0.4 | 2016-11-02 11:05:10 -0700
+
+  * Release 0.4.
+
+  * Fix maintainer file - elasticsearch and main file were switched around. (Johanna Amann)
+
+  * Change elasticsearch plugin from deprecated to orphaned.
+    Addresses BIT-1617 (Johanna Amann)
+
+  * Fix an bugs in myricom broctl plugin. (Seth Hall)
+
+  * Fix an issue in the broctl netmap plugin causing not all pipes to be sniffed
+    correctly. (Seth Hall).
+
+  * Update the netmap plugin readme. (Seth Hall)
+
+  * Fix up the broctl netmap plugin. It now works if you are not load balancing or
+    if you are sniffing separate interfaces on a single system. (Seth Hall).
+
+    It didn't do things right if you were not sniffing a pipe
+    (i.e., not load balancing) or if you were sniffing two
+    separate load balanced sets of pipes from two interfaces
+    on a single system. These are now handled correctly. (Seth Hall)
+
+  * Adding missing headers that were needed for plugin installation. (Hitesh Dharmdasani)
+
+  * Use FindPostgreSQL.cmake shipped with cmake. (Johanna Amann)
+
 0.3 | 2016-08-12 13:17:33 -0700
 
   * Release 0.3.
