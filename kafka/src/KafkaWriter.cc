@@ -1,10 +1,14 @@
 
+#include <librdkafka/rdkafkacpp.h>
+
 #include <Type.h>
 #include <threading/Formatter.h>
 #include <threading/formatters/JSON.h>
-#include "kafka.bif.h"
-#include "TaggedJSON.h"
+
 #include "KafkaWriter.h"
+#include "kafka.bif.h"
+
+#include "TaggedJSON.h"
 
 using namespace logging;
 using namespace writer;

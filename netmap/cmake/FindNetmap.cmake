@@ -14,12 +14,13 @@
 #  NETMAP_INCLUDE_DIR        The netmap include directory.
 
 find_path(NETMAP_ROOT_DIR
-    NAMES sys/net/netmap_user.h
+    NAMES include/net/netmap_user.h
+    HINTS /usr/ /usr/local/
 )
 
 find_path(NETMAP_INCLUDE_DIR
     NAMES net/netmap_user.h
-    HINTS ${NETMAP_ROOT_DIR}/sys
+    HINTS ${NETMAP_ROOT_DIR}/include
 )
 
 include(FindPackageHandleStandardArgs)

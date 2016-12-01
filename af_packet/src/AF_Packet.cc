@@ -137,7 +137,7 @@ inline bool AF_PacketSource::ConfigureFanoutGroup(bool enabled)
 		int ret;
 
 		fanout_id = BifConst::AF_Packet::fanout_id;
-		fanout_arg = (fanout_id | (GetFanoutMode() << 16));
+		fanout_arg = ((fanout_id & 0xffff) | (GetFanoutMode() << 16));
 
 		ret = setsockopt(socket_fd, SOL_PACKET, PACKET_FANOUT,
 			&fanout_arg, sizeof(fanout_arg));
@@ -205,13 +205,9 @@ bool AF_PacketSource::ExtractNextPacket(Packet* pkt)
 	struct tpacket3_hdr *packet = 0;
 	const u_char *data;
 	struct timeval ts;
-	bool ret;
-
 	while ( true )
 		{
-		ret = rx_ring->GetNextPacket(&packet);
-
-		if ( ! ret )
+		if ( ! rx_ring->GetNextPacket(&packet) )
 			return false;
 
 		current_hdr.ts.tv_sec = packet->tp_sec;
@@ -219,6 +215,13 @@ bool AF_PacketSource::ExtractNextPacket(Packet* pkt)
 		current_hdr.caplen = packet->tp_snaplen;
 		current_hdr.len = packet->tp_len;
 		data = (u_char *) packet + packet->tp_mac;
+
+		if ( !ApplyBPFFilter(current_filter, &current_hdr, data) )
+			{
+			++num_discarded;
+			DoneWithPacket();
+			continue;
+			}
 
 		pkt->Init(props.link_type, &current_hdr.ts, current_hdr.caplen, current_hdr.len, data);
 
@@ -228,15 +231,12 @@ bool AF_PacketSource::ExtractNextPacket(Packet* pkt)
 			return false;
 			}
 
-		if ( ApplyBPFFilter(current_filter, &current_hdr, data) )
-			break;
-
-		num_discarded++;
+		stats.received++;
+		stats.bytes_received += current_hdr.len;
+		return true;
 		}
 
-	stats.received++;
-	stats.bytes_received += current_hdr.len;
-	return true;
+	return false;
 	}
 
 void AF_PacketSource::DoneWithPacket()
@@ -264,7 +264,7 @@ void AF_PacketSource::Statistics(Stats* s)
 		}
 
 	struct tpacket_stats_v3 tp_stats;
-	socklen_t tp_stats_len;
+	socklen_t tp_stats_len = sizeof (struct tpacket_stats_v3);
 	int ret;
 
 	ret = getsockopt(socket_fd, SOL_PACKET, PACKET_STATISTICS, &tp_stats, &tp_stats_len);

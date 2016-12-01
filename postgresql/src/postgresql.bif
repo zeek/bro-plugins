@@ -1,0 +1,5 @@
+module LogPostgres;
+
+const default_hostname: string;
+const default_dbname: string;
+const default_port: int;

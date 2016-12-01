@@ -24,6 +24,8 @@ risk.
 
    netmap - A packet source providing native netmap support <netmap/README>
 
+   postgresql - An experimental PostgreSQL reader/writer <postgresql/README>
+
    pf_ring - A packet source providing native PF_RING support <pf_ring/README>
 
    redis - A log writer adding support for a Redis backend <redis/README>
