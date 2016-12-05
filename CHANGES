@@ -1,4 +1,15 @@
 
+0.4-9 | 2016-12-05 15:52:15 -0800
+
+  * Adding PATH_SUFFIXES and fixing indentation for Kafka plugin (Jonathan Pulsifer)
+
+  * fixing typo: cmake cares about case for Kafka plugin (Jonathan Pulsifer)
+
+  * Added broctl plugin for AF_Packet. (Jan Grashoefer)
+
+  * Added configurable fanout mode to af_packet. The fanout mode can now be selected
+    using AF_Packet::fanout_mode. (Jan Grashoefer)
+
 0.4 | 2016-11-02 11:05:10 -0700
 
   * Release 0.4.
