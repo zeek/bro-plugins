@@ -11,6 +11,8 @@ export {
 	const enable_hw_timestamping = F &redef;
 	## Toggle whether to use PACKET_FANOUT.
 	const enable_fanout = T &redef;
+	## Fanout Mode.
+	const fanout_mode = FANOUT_HASH &redef;
 	## Fanout ID.
 	const fanout_id = 23 &redef;
 }

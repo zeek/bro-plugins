@@ -69,6 +69,7 @@ private:
 	bool EnablePromiscMode();
 	bool ConfigureFanoutGroup(bool enabled);
 	bool ConfigureHWTimestamping(bool enabled);
+	uint32_t GetFanoutMode();
 };
 
 }
