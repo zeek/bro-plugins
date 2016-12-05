@@ -1,4 +1,4 @@
-Bro::AF_Packet - Packet acquisition via AF_Packet (dynamic, version 1.0)
+Bro::AF_Packet - Packet acquisition via AF_Packet (dynamic, version 1.1)
     [Packet Source] AF_PacketReader (interface prefix "af_packet"; supports live input)
     [Type] AF_Packet::FanoutMode
     [Constant] AF_Packet::buffer_size
