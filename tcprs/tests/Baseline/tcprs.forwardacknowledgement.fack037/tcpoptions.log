@@ -3,8 +3,8 @@
 #empty_field	(empty)
 #unset_field	-
 #path	tcpoptions
-#open	2014-08-05-06-18-49
+#open	2016-12-06-00-11-37
 #fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	label	timestamps	bad	sack_used	orig_sack_offer	resp_sack_offer
 #types	time	string	addr	port	addr	port	string	bool	bool	bool	bool	bool
-0.000000	CXWv6p3arKYeMETxOg	10.1.2.72	1264	192.168.0.11	80	TCP::Options	F	F	T	T	T
-#close	2014-08-05-06-18-49
+0.000000	CHhAvVGS1DHFjwGM9	10.1.2.72	1264	192.168.0.11	80	TCP::Options	F	F	T	T	T
+#close	2016-12-06-00-11-37
