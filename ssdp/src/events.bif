@@ -1,0 +1,13 @@
+## Generated for SSDP requests.
+##
+## c: The connection
+## method: The type of method used in the discovery message (either NOTIFY or M-SEARCH)
+event ssdp_method%(c: connection, method: string%);
+
+## Generated for SSDP headers.
+## This event is triggered for each header in an SSDP message
+
+## c: The connection
+## name: The header field name
+## value: The header field value
+event ssdp_header%(c: connection, name: string, value: string%);

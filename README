@@ -30,6 +30,8 @@ risk.
 
    redis - A log writer adding support for a Redis backend <redis/README>
 
+   ssdp - An SSDP protocol analyzer <ssdp/READ>
+
    tcprs - A TCP retransmission and network reordering analyzer <tcprs/README>
 
 
