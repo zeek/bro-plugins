@@ -8,11 +8,15 @@ Installation
 ------------
 
 Follow Myricom's instructions to get its kernel module and userspace libraries installed,
-then use the following commands to configure and build the plugin. In most cases, if you
-are building this plugin from the Bro source tree, you won't need any configure arguments::
+then use the following commands to configure and build the plugin.
+
+After building bro from the sources, change to the "aux/plugins/myricom" directory and run:
 
         ./configure --with-myricom=<path to sniffer sources> --bro-dist=<path to bro sources>
         make && sudo make install
+
+Note: In most cases, if you are building this plugin from the Bro source tree, you won't 
+need any configure arguments:
 
 If everything built and installed correctly, you should see this::
 
@@ -61,7 +65,7 @@ Tuning
 You may wish to tune the amount of memory used for the global packet buffer. This
 setting is available in the Bro script interface to the plugin, but it's also 
 available as a global option in ``broctl.cfg`` or as a per-node option in 
-``node.cfg``.  The following like in either config file will set the SNF packet
+``node.cfg``.  The following line in either config file will set the SNF packet
 buffer ring size to 16GB::
 
      myricom.snf_ring_size=16384
