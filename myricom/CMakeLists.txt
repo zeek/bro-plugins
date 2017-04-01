@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 2.6.3)
 
-project(Plugin)
+project(bro-plugins-myricom)
 
 include(BroPlugin)
 
 find_package(Myricom)
+
+set(VERSION "2.5.0")
 
 if ( MYRICOM_FOUND )
     include_directories(BEFORE ${MYRICOM_INCLUDE_DIR})
@@ -19,3 +21,9 @@ if ( MYRICOM_FOUND )
 else ()
     message(FATAL_ERROR "Myricom library and/or headers not found.")
 endif ()
+
+# If this CMake project is a sub-project of another, we will not
+# configure the generic packaging because CPack will fail in the case
+# that the parent project has already configured packaging
+include(PackageMyricom)
+PackageMyricom(${VERSION} )
