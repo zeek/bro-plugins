@@ -1,5 +1,5 @@
 import BroControl.plugin
-from BroControl import config
+import BroControl.config
 
 class Myricom(BroControl.plugin.Plugin):
     def __init__(self):
@@ -14,23 +14,24 @@ class Myricom(BroControl.plugin.Plugin):
     def init(self):
         useplugin = False
 
-        interface_pipes={}
+        interface_pipes = {}
         for nn in self.nodes():
-            # Only do this if it's a worker, starts with myricom:: and has some lb_proc configured.
-            if nn.type != "worker" or not nn.interface.startswith("myricom::") or nn.lb_procs == "":
+            # Only do this if it's a worker, starts with myricom:: and has some
+            # lb_procs configured.
+            if nn.type != "worker" or not nn.interface.startswith("myricom::") or not nn.lb_procs:
                 continue
 
             useplugin = True
 
             orig_if = nn.interface
-            if (nn.host,orig_if) not in interface_pipes:
-                i=0
+            if (nn.host, orig_if) not in interface_pipes:
+                i = 0
                 if nn.myricom_first_ring:
                     i = int(nn.myricom_first_ring)
-                interface_pipes[nn.host,orig_if] = i
+                interface_pipes[nn.host, orig_if] = i
 
-            nn.interface="{:s}:{:d}".format(orig_if, interface_pipes[nn.host,orig_if])
-            interface_pipes[nn.host,orig_if] = interface_pipes[nn.host,orig_if]+1
+            nn.interface="{:s}:{:d}".format(orig_if, interface_pipes[nn.host, orig_if])
+            interface_pipes[nn.host, orig_if] += 1
 
         return useplugin
 
@@ -45,13 +46,14 @@ class Myricom(BroControl.plugin.Plugin):
         script += "\nredef Myricom::snf_ring_size = %d;" % self.getOption("snf_ring_size")
 
         for wn in self.nodes():
-            if wn.type == "worker": 
-                if wn.lb_procs > 0:
-                    script += "\n@if( peer_description == \"%s\" )" % wn.name
-                    script += "\n  redef Myricom::snf_num_rings = %s;" % wn.lb_procs
-                    if wn.myricom_snf_ring_size:
-                        script += "\n  redef Myricom::snf_ring_size = %s;" % wn.myricom_snf_ring_size
-                    script += "\n@endif"
+            if wn.type != "worker" or not wn.lb_procs:
+                continue
+
+            script += "\n@if( peer_description == \"%s\" )" % wn.name
+            script += "\n  redef Myricom::snf_num_rings = %s;" % wn.lb_procs
+            if wn.myricom_snf_ring_size:
+                script += "\n  redef Myricom::snf_ring_size = %s;" % wn.myricom_snf_ring_size
+            script += "\n@endif"
 
         return script
 
