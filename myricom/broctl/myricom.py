@@ -30,7 +30,7 @@ class Myricom(BroControl.plugin.Plugin):
                     i = int(nn.myricom_first_ring)
                 interface_pipes[nn.host, orig_if] = i
 
-            nn.interface="{:s}:{:d}".format(orig_if, interface_pipes[nn.host, orig_if])
+            nn.interface = "%s:%d" % (orig_if, interface_pipes[nn.host, orig_if])
             interface_pipes[nn.host, orig_if] += 1
 
         return useplugin
