@@ -1,5 +1,5 @@
 import BroControl.plugin
-from BroControl import config
+import BroControl.config
 
 class Netmap(BroControl.plugin.Plugin):
     def __init__(self):
@@ -14,23 +14,24 @@ class Netmap(BroControl.plugin.Plugin):
     def init(self):
         useplugin = False
 
-        interface_pipes={}
+        interface_pipes = {}
         for nn in self.nodes():
-            # Only do this if it's a worker, starts with netmap:: and has some lb_proc configured.
-            if nn.type != "worker" or not nn.interface.startswith("netmap::") or nn.lb_procs == "":
+            # Only do this if it's a worker, starts with netmap:: and has some
+            # lb_procs configured.
+            if nn.type != "worker" or not nn.interface.startswith("netmap::") or not nn.lb_procs:
                 continue
 
             useplugin = True
 
             orig_if = nn.interface
-            if (nn.host,orig_if) not in interface_pipes:
-                i=0
+            if (nn.host, orig_if) not in interface_pipes:
+                i = 0
                 if nn.netmap_first_pipe:
                     i = int(nn.netmap_first_pipe)
-                interface_pipes[nn.host,orig_if] = i
+                interface_pipes[nn.host, orig_if] = i
 
-            nn.interface="{:s}}}{:d}".format(orig_if, interface_pipes[nn.host,orig_if])
-            interface_pipes[nn.host,orig_if] = interface_pipes[nn.host,orig_if]+1
+            nn.interface="%s:%d" % (orig_if, interface_pipes[nn.host, orig_if])
+            interface_pipes[nn.host, orig_if] += 1
 
         return useplugin
 
