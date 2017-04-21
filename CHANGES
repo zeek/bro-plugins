@@ -1,4 +1,25 @@
 
+0.4-21 | 2017-04-21 14:21:58 -0700
+
+  * Fix coding style issues in af_packet broctl plugin. (Daniel Thayer)
+
+  * Fix netmap broctl plugin to set correct interface name, and fixed
+    the format string so that it works on Python 2.6. (Daniel Thayer)
+
+  * Fix myricom broctl plugin to work on python 2.6. (Daniel Thayer)
+
+  * Code cleanup for myricom broctl plugin. (Daniel Thayer)
+
+  * BIT-1705: Clarify Myricom compilation must succeed Bro build.
+    (Andre F de Miranda)
+
+  * jswaro/tcprs: Moved TCPRS plugin to bro-pkg. (James Swaro)
+
+  * Remove postgresql plugin and point to new package location.
+    (Johanna Amann)
+
+  * Update tcprs baselines after Bro change to siphash. (Johanna Amann)
+
 0.4-9 | 2016-12-05 15:52:15 -0800
 
   * Adding PATH_SUFFIXES and fixing indentation for Kafka plugin (Jonathan Pulsifer)
