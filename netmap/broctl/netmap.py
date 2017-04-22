@@ -30,7 +30,7 @@ class Netmap(BroControl.plugin.Plugin):
                     i = int(nn.netmap_first_pipe)
                 interface_pipes[nn.host, orig_if] = i
 
-            nn.interface="%s:%d" % (orig_if, interface_pipes[nn.host, orig_if])
+            nn.interface="%s}%d" % (orig_if, interface_pipes[nn.host, orig_if])
             interface_pipes[nn.host, orig_if] += 1
 
         return useplugin
