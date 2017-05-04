@@ -1,6 +1,0 @@
-
-================================================
-Logging to, and input from, PostgreSQL Databases
-================================================
-
-The PostgreSQL plugin is now available as a bro-pkg package at https://github.com/0xxon/bro-postgresql

@@ -1,6 +1,0 @@
-==============================================================================
-TCP Retransmission and State Analyzer (TCPRS) plugin for Bro-IDS framework
-==============================================================================
-
-The TCPRS plugin is now available as a bro-pkg at https://github.com/jswaro/tcprs.
-

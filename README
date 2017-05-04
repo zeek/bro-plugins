@@ -1,4 +1,11 @@
 
+=====================================================================
+NOTE: This collection of plugins is deprecated and no longer updated.
+We're in the process of moving the plugins over to being maintained
+through the Bro Package Manager at https://github.com/bro/packages.
+=====================================================================
+
+
 A Collection of Plugins for Bro
 ===============================
 
@@ -14,7 +21,8 @@ risk.
 .. toctree::
    :maxdepth: 1
 
-   af_packet - A packet source providing native AF_Packet support on Linux. <af_packet/README>
+   af_packet - A packet source providing native AF_Packet support on
+   Linux. Now hosted at https://github.com/J-Gras/bro-af_packet-plugin
 
    elasticsearch - A log writer adding support for the Apache Lucene-based ElasticSearch database <elasticsearch/README>
 
@@ -24,14 +32,14 @@ risk.
 
    netmap - A packet source providing native netmap support <netmap/README>
 
-   postgresql - An experimental PostgreSQL reader/writer <postgresql/README>
+   postgresql - An experimental PostgreSQL reader/writer. Now hosted
+   at https://github.com/0xxon/bro-postgresql.
 
    pf_ring - A packet source providing native PF_RING support <pf_ring/README>
 
    redis - A log writer adding support for a Redis backend <redis/README>
 
-   tcprs - A TCP retransmission and network reordering analyzer <tcprs/README>
-
+   tcprs - A TCP retransmission and network reordering analyzer. Now hosted at https://github.com/jswaro/tcprs.
 
 Please refer to the documentation for each plugin for information on
 installation and usage; refer to their COPYING files for licensing
