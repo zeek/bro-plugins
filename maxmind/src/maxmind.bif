@@ -1,0 +1,177 @@
+module MaxMind;
+
+%%{
+#include "OpaqueMaxMind.h"
+using namespace plugin::Bro_MaxMind;
+%%}
+
+function open%(db: string%): opaque of maxminddb
+	%{
+	MMDBVal *mmdb_val = new MMDBVal();
+	int status = MMDB_open(db->CheckString(), MMDB_MODE_MMAP, &mmdb_val->mmdb);
+	if ( MMDB_SUCCESS != status )
+		{
+		reporter->Warning("MaxMindDB Plugin: can't open %s - %s", 
+		                  db->CheckString(),
+		                  MMDB_strerror(status));
+		if ( MMDB_IO_ERROR == status )
+			{
+			reporter->Warning("MaxMindDB Plugin: IO error - %s", 
+			                  strerror(errno));
+			}
+		//return 0;
+		}
+
+	return mmdb_val;
+	%}
+
+function lookup%(mmdb: opaque of maxminddb, h: addr%): opaque of maxmind_result
+	%{
+	int gai_error, mmdb_error;
+	string s = h->AsAddr().AsString();
+	MMDBVal *mmdb_val = static_cast<MMDBVal*>(mmdb);
+
+	MMDB_lookup_result_s result =
+		MMDB_lookup_string(&mmdb_val->mmdb, s.c_str(), &gai_error, &mmdb_error);
+
+	if ( 0 != gai_error )
+		{
+		reporter->Warning("MaxMindDB Plugin: Error from call to getaddrinfo for %s - %s",
+		                  s.c_str(), gai_strerror(gai_error));
+		}
+
+	if ( MMDB_SUCCESS != mmdb_error )
+		{
+		reporter->Warning("MaxMindDB Plugin: %s", MMDB_strerror(mmdb_error));
+		}
+
+	if ( result.found_entry )
+		{
+		MaxMindResultVal *mmrv = new MaxMindResultVal(result);
+		mmrv->mmdb = &mmdb_val->mmdb;
+		return mmrv;
+		}
+
+	//return 0;
+	%}
+
+function get_record%(result: opaque of maxmind_result, field: string_vec, rec: any%): bool
+	%{
+	int status;
+	MMDB_entry_data_list_s *entry_data_list = NULL;
+	MaxMindResultVal *result_val = static_cast<MaxMindResultVal*>(result);
+
+	RecordVal *rv = rec->AsRecordVal();
+	if ( ! rv )
+		reporter->InternalError("Invalid record given to MaxMind::get_record");
+
+	VectorVal *fields_vec = field->AsVectorVal();
+	const char * lookup_path[fields_vec->Size()+1];
+	int i;
+	for(i=0; i<fields_vec->Size(); i++)
+		{
+		lookup_path[i] = fields_vec->Lookup(i)->AsStringVal()->CheckString();
+		}
+	lookup_path[fields_vec->Size()] = NULL;
+
+	MMDB_entry_data_s entry_data;
+	status = MMDB_aget_value(&(result_val->result.entry), &entry_data,
+	                         lookup_path);
+
+	if ( MMDB_SUCCESS == status )
+		{
+		if ( entry_data.offset )
+			{
+			if ( MMDB_DATA_TYPE_MAP == entry_data.type )
+				{
+				printf("MAP!\n");
+				MMDB_entry_s entry =
+				{ .mmdb = result_val->mmdb, .offset = entry_data.offset };
+				status = MMDB_get_entry_data_list(&entry,
+				                                  &entry_data_list);
+
+				uint32_t size = entry_data_list->entry_data.data_size * 2;
+				printf("size: %d\n", size);
+				for (entry_data_list = entry_data_list->next;
+				     size && entry_data_list; size--)
+					{
+					string key = string((char *)entry_data_list->entry_data.utf8_string, 
+					                    entry_data_list->entry_data.data_size);
+					printf("key: %s\n", key.c_str());
+					entry_data_list = entry_data_list->next;
+					}
+				}
+			}
+		}
+
+	printf("blah\n");
+	return new Val(1, TYPE_BOOL);
+	%}
+
+function get_string%(result: opaque of maxmind_result, field: string_vec%): string
+	%{
+	int status;
+	MMDB_entry_data_list_s *entry_data_list = NULL;
+	MaxMindResultVal *result_val = static_cast<MaxMindResultVal*>(result);
+
+	VectorVal *fields_vec = field->AsVectorVal();
+
+	const char * lookup_path[fields_vec->Size()+1];
+	int i;
+	for(i=0; i<fields_vec->Size(); i++)
+		{
+		lookup_path[i] = fields_vec->Lookup(i)->AsStringVal()->CheckString();
+		}
+	lookup_path[fields_vec->Size()] = NULL;
+
+	MMDB_entry_data_s entry_data;
+	status = MMDB_aget_value(&(result_val->result.entry), &entry_data,
+	                         lookup_path);
+
+	if ( MMDB_SUCCESS == status )
+		{
+		if ( entry_data.offset )
+			{
+			StringVal *sv = 0;
+			if ( MMDB_DATA_TYPE_BYTES == entry_data.type )
+				{
+				sv = new StringVal(entry_data.data_size, (const char *) entry_data.bytes);
+				}
+			else if ( MMDB_DATA_TYPE_UTF8_STRING == entry_data.type )
+				{
+				sv = new StringVal(entry_data.data_size, entry_data.utf8_string);
+				}
+			else if ( MMDB_DATA_TYPE_DOUBLE == entry_data.type )
+				{
+				char s[20];
+				snprintf(s, sizeof(s), "%f", entry_data.double_value);
+				sv = new StringVal(s);
+				}
+			else if ( MMDB_DATA_TYPE_ARRAY == entry_data.type )
+				{
+				printf("ARRAY!\n");
+				}
+			else if ( MMDB_DATA_TYPE_MAP == entry_data.type )
+				{
+				//printf("MAP!\n");
+				}
+
+			if ( sv )
+				return sv;
+
+			//MMDB_entry_s entry =
+			//{ .mmdb = result_val->mmdb, .offset = entry_data.offset };
+			//status = MMDB_get_entry_data_list(&entry,
+			//                                  &entry_data_list);
+			} 
+		else
+			{
+			fprintf(
+			    stdout,
+			    "\n  No data was found at the lookup path you provided\n\n");
+			}
+		}
+
+	MMDB_free_entry_data_list(entry_data_list);
+	return new StringVal(fmt("<unknown> - Type::%d", entry_data.type));
+	%}

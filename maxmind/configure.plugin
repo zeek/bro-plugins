@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# Hooks to add custom options to the configure script.
+#
+
+plugin_usage()
+{
+    cat <<EOF
+    --with-maxminddb=DIR          Path to libmaxminddb root dir.
+EOF
+}
+
+plugin_option()
+{
+    case "$1" in
+        --with-maxminddb=*)
+            append_cache_entry LIBMAXMINDDB_ROOT_DIR PATH $optarg
+            return 0
+            ;;
+
+        *)
+            return 1;
+            ;;
+    esac
+}
