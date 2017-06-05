@@ -1,10 +1,7 @@
 
-=====================================================================
 NOTE: This collection of plugins is deprecated and no longer updated.
 We're in the process of moving the plugins over to being maintained
 through the Bro Package Manager at https://github.com/bro/packages.
-=====================================================================
-
 
 A Collection of Plugins for Bro
 ===============================
