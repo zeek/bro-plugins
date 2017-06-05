@@ -1,4 +1,12 @@
 
+0.5 | 2017-05-04 09:28:37 -0700
+
+  * Release 0.5
+
+  * Removing af_packet plugin (Not at https://github.com/J-Gras/bro-af_packet-plugin.)
+    Also removing the almost empty tcprs/postgresql directories so that
+    it's easier to see which plugins still need to make the transition. (Robin Sommer)
+
 0.4-24 | 2017-04-22 08:09:40 -0700
 
   * Fix coding style issues in af_packet broctl plugin. (Daniel Thayer)
