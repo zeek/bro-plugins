@@ -18,9 +18,6 @@ risk.
 .. toctree::
    :maxdepth: 1
 
-   af_packet - A packet source providing native AF_Packet support on
-   Linux. Now hosted at https://github.com/J-Gras/bro-af_packet-plugin
-
    elasticsearch - A log writer adding support for the Apache Lucene-based ElasticSearch database <elasticsearch/README>
 
    kafka - A log writer that sends logging output to Kafka <kafka/README>
@@ -29,14 +26,19 @@ risk.
 
    netmap - A packet source providing native netmap support <netmap/README>
 
-   postgresql - An experimental PostgreSQL reader/writer. Now hosted
-   at https://github.com/0xxon/bro-postgresql.
-
    pf_ring - A packet source providing native PF_RING support <pf_ring/README>
 
    redis - A log writer adding support for a Redis backend <redis/README>
 
-   tcprs - A TCP retransmission and network reordering analyzer. Now hosted at https://github.com/jswaro/tcprs.
+
+A few plugins are now hosted elsewhere:
+
+   - af_packet - A packet source providing native AF_Packet support on Linux. Now hosted at https://github.com/J-Gras/bro-af_packet-plugin
+
+   - postgresql - An experimental PostgreSQL reader/writer. Now hosted at https://github.com/0xxon/bro-postgresql
+
+   - tcprs - A TCP retransmission and network reordering analyzer. Now hosted at https://github.com/jswaro/tcprs
+
 
 Please refer to the documentation for each plugin for information on
 installation and usage; refer to their COPYING files for licensing
@@ -46,5 +48,3 @@ MAINTAINER file for contact information.
 The Bro plugins git repository is located at `git://git.bro.org/bro-plugins.git
 <git://git.bro.org/bro-plugins.git>`__. You can browse the repository
 `here <http://git.bro.org/bro-plugins.git>`__.
-If you would like to see your plugin included in the repository,
-please write to info@bro.org.
