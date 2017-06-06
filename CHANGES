@@ -1,7 +1,9 @@
 
-0.5 | 2017-06-05 14:36:29 -0700
+0.5 | 2017-06-06 13:10:25 -0700
 
   * Release 0.5
+
+  * Fix broken links in Readme. (Daniel Thayer).
 
   * Removing af_packet plugin (Not at https://github.com/J-Gras/bro-af_packet-plugin.)
     Also removing the almost empty tcprs/postgresql directories so that
