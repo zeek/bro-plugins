@@ -22,8 +22,6 @@ risk.
 
    kafka - A log writer that sends logging output to Kafka <kafka/README>
 
-   myricom - A packet source providing native `Myricom SNF v3` support <myricom/README>
-
    netmap - A packet source providing native netmap support <netmap/README>
 
    pf_ring - A packet source providing native PF_RING support <pf_ring/README>
@@ -38,6 +36,8 @@ A few plugins are now hosted elsewhere:
    - postgresql - An experimental PostgreSQL reader/writer. Now hosted at https://github.com/0xxon/bro-postgresql
 
    - tcprs - A TCP retransmission and network reordering analyzer. Now hosted at https://github.com/jswaro/tcprs
+
+   - myricom - A packet source providing native Myricom SNF support.  Now hosted at https://github.com/sethhall/bro-myricom
 
 
 Please refer to the documentation for each plugin for information on
