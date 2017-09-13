@@ -1,4 +1,4 @@
-NOTE: We do no longer maintain any Bro plugins here. Most of the
-plugins that used be available here have been moved over to use the
+NOTE: We no longer maintain any Bro plugins here. Most of the
+plugins that used to be available here have been moved over to use the
 Bro Package Manager instead. See https://github.com/bro/packages for a
 list of Bro packages currently available.
